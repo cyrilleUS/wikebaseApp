@@ -1,0 +1,22 @@
+<ion-navbar *navbar>
+  <ion-title>Home</ion-title>
+</ion-navbar>
+
+<ion-content padding class="home">
+  <ion-card>
+    <ion-list>
+      <form [ngFormModel]="searchForm" (submit)="search($event)">
+        <ion-item>
+          <ion-input id="search" ngControl="searchString" type="text" placeholder="Search" value=""></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label id="categoriesLabel" for="categoryInput">Categories</ion-label>
+          <ion-select id="categoryInput" [(ngModel)]="currentCategory">
+            <ion-option *ngFor="#r of categories" value="{{r}}">{{r}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <button light type="submit">Search</button>
+      </form>
+    </ion-list>
+  </ion-card>
+</ion-content>
