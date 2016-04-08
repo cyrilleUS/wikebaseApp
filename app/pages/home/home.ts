@@ -13,4 +13,5 @@ export class Home {
   constructor() {
     this.categories = ["All", "Video", "Music", "Marketing", "Copywriting"];
   }
+  /*a comment in master branch*/
 }
