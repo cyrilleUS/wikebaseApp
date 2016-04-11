@@ -2,17 +2,15 @@ import {Page} from 'ionic-angular';
 
 
 @Page({
-  templateUrl: 'build/pages/home/home.html',
+  templateUrl: 'build/pages/new-contact/new-contact.html'
 })
-
-export class HomePage {
-  ownerName: string;
+export class NewContactPage {
   constructor() {
 
   }
-
   onPageLoaded(){
-    this.ownerName = "Denis Denis";
+    //to do when we load the page the first time
+    //works the same as ngOnInit
   }
   onPageWillEnter() {
     /*to do just before the display of the page*/
