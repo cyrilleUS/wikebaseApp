@@ -6,22 +6,24 @@ import {ContactDetailPage} from './pages/contact-detail/contact-detail';
 import {ListContactPage} from './pages/list-contact/list-contact';
 import {NewContactPage} from './pages/new-contact/new-contact';
 import {ContactServices} from './services/contactServices';
+import {UserServices} from './services/userServices';
 import {Contact} from './models/contact';
 
 @App({
   templateUrl: 'build/app.html',
   config: {}, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers: [ContactServices]
+  providers: [ContactServices, UserServices]
 })
 export class MyApp {
   rootPage: any;
   pages: Array<{title: string, component: any}>;
   contactServices: ContactServices;
+  userServices: UserServices;
 
-  constructor(private app: IonicApp, private platform: Platform, contactServices: ContactServices) {
+  constructor(private app: IonicApp, private platform: Platform, contactServices: ContactServices, userServices: UserServices) {
 
     this.contactServices = contactServices;
-
+    this.userServices = userServices;
     this.initializeApp();
 
     this.pages = [
@@ -38,6 +40,7 @@ export class MyApp {
       StatusBar.styleDefault();
     });
     this.contactServices.init();
+    this.userServices.init();
   }
 
   openPage(page) {

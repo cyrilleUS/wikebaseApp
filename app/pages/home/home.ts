@@ -1,5 +1,5 @@
 import {Page} from 'ionic-angular';
-
+import {UserServices} from '../../services/userServices';
 
 @Page({
   templateUrl: 'build/pages/home/home.html',
@@ -7,7 +7,7 @@ import {Page} from 'ionic-angular';
 
 export class HomePage {
   ownerName: string;
-  constructor() {
+  constructor(userServices: UserServices) {
 
   }
 
