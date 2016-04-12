@@ -10,4 +10,11 @@
   <ion-card>
     <p>where we'll display all the contacts and have links to contact-detail page</p>
   </ion-card>
+  <ion-list *ngFor="#contact of contactList">
+    <ion-card>
+      Name : {{contact.firstName}} {{contact.lastName}}<br>
+      Email : {{contact.email}}<br>
+      Address : {{contact.addressStreet}} {{contact.addressCity}}, {{contact.addressCode}} {{contact.addressState}}, {{contact.addressCountry}}
+    </ion-card>
+  </ion-list>
 </ion-content>

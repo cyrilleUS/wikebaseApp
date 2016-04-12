@@ -1,19 +1,24 @@
 import {Page} from 'ionic-angular';
-
+import {ContactServices} from '../../services/contactServices';
+import {Contact} from '../../models/Contact';
 
 @Page({
   templateUrl: 'build/pages/list-contact/list-contact.html',
 })
 export class ListContactPage {
-  constructor() {
+  contactServices;
+  contactList;
 
+  constructor(contactServices: ContactServices) {
+    this.contactServices = contactServices;
   }
+
   onPageLoaded(){
-    //to do when we load the page the first time
-    //works the same as ngOnInit
+
   }
   onPageWillEnter() {
     /*to do just before the display of the page*/
+    this.contactServices.getAll().subscribe(contactList => this.contactList = contactList);
   }
   onPageDidEnter(){}
   onPageWillLeave() {
