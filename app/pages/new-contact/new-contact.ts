@@ -26,7 +26,6 @@ export class NewContactPage {
     this.lastName = this.contactForm.controls['lastName'];
     this.email = this.contactForm.controls['email'];
 
-
   }
 
   emailValidForm(c: Control) {

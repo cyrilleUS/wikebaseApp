@@ -7,9 +7,7 @@
 
 <ion-content padding>
   <h3>This is the list-contact page</h3>
-  <ion-card>
-    <p>where we'll display all the contacts and have links to contact-detail page</p>
-  </ion-card>
+
   <ion-list *ngFor="#contact of contactList">
     <ion-card>
       Name : {{contact.firstName}} {{contact.lastName}}<br>
