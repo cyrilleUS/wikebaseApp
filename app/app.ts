@@ -39,7 +39,6 @@ export class MyApp {
     this.platform.ready().then(() => {
       StatusBar.styleDefault();
     });
-    this.contactServices.init();
     this.userServices.init();
   }
 

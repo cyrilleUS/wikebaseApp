@@ -16,7 +16,7 @@ export class UserServices {
     init() {
       this.loggedUser =
       {
-        "id":0,
+        "id":1547,
         "firstName":"Denis",
         "lastName":"Denis"
       };

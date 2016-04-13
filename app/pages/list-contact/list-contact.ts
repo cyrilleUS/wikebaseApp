@@ -8,7 +8,7 @@ import {NewContactPage} from '../new-contact/new-contact';
   templateUrl: 'build/pages/list-contact/list-contact.html',
 })
 export class ListContactPage {
-  contactServices;
+  contactServices: ContactServices;
   contactList;
 
   constructor(contactServices: ContactServices, private app: IonicApp) {
@@ -20,7 +20,7 @@ export class ListContactPage {
   }
   onPageWillEnter() {
     /*to do just before the display of the page*/
-    this.contactServices.getAll().subscribe(contactList => this.contactList = contactList);
+    this.contactServices.getAll().subscribe(contactList => this.contactList = this.convertResultToContactList(contactList));
   }
   onPageDidEnter(){}
   onPageWillLeave() {
@@ -33,5 +33,10 @@ export class ListContactPage {
   showNewContactPage() {
     let nav = this.app.getComponent("nav");
     nav.setRoot(NewContactPage);
+  }
+
+  convertResultToContactList(contactList: String) {
+    console.log(contactList);
+    return "";
   }
 }
