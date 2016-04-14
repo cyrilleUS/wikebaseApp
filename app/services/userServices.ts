@@ -16,9 +16,10 @@ export class UserServices {
     init() {
       this.loggedUser =
       {
-        "id":1547,
+        "id":15,
         "firstName":"Denis",
         "lastName":"Denis"
       };
     }
 }
+//good: "id":1554,
