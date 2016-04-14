@@ -1,6 +1,8 @@
+import {RestErrors} from './restErrors';
+
 export class RestMessage {
-  errors: any;
-  multipleResults: any;
+  errors: RestErrors;
+  multipleResults: any[];
   singleResult: any;
-  status: any;
+  status: string;
 }

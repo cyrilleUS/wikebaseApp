@@ -56,7 +56,21 @@ export class NewContactPage {
 
   successPopup(messageToDisplay: String, nav: any){
     let alert = Alert.create({
-        title: 'Saving Contact',
+        title: 'Contact Saved',
+        message: ''+messageToDisplay,
+        buttons: [
+                { text:'Ok',
+                  handler: () => {
+                    nav.setPages([{page: HomePage }]);
+                  }
+              }]
+      });
+    //let nav = this.app.getComponent("nav");
+    nav.present(alert);
+  }
+  errorPopup(messageToDisplay: String, nav: any){
+    let alert = Alert.create({
+        title: 'Error',
         message: ''+messageToDisplay,
         buttons: [
                 { text:'Ok',
@@ -90,7 +104,7 @@ export class NewContactPage {
       };
 
       //let messageToDisplay = "";
-      this.contactServices.addContact(contact,this.successPopup,this.app.getComponent("nav"));
+      this.contactServices.addContact( contact, this.successPopup, this.app.getComponent("nav"), this.errorPopup);
       //console.log('in new-contact, messageToDisplay:'+messageToDisplay);
 
       /*
