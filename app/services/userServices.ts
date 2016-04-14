@@ -70,5 +70,16 @@ export class UserServices {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
     }
+
+    deleteLoggedUser() {
+      let user: User = {
+        "idUser": "",
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "password": ""
+      };
+      this.loggedUser = user;
+    }
 }
 //good: "id":1554,
