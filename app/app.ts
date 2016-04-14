@@ -40,6 +40,7 @@ export class MyApp {
       StatusBar.styleDefault();
     });
     this.userServices.init();
+    this.contactServices.init();
   }
 
   openPage(page) {

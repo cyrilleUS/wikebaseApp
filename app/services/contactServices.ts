@@ -4,6 +4,7 @@ import {Http, Headers, RequestOptions} from 'angular2/http';
 import {Contact} from '../models/contact';
 import {Observable} from 'rxjs/Observable';
 import {UserServices} from './userServices';
+import {RestMessage} from '../models/restMessage';
 import 'rxjs/Rx';
 
 let favorites = [],
@@ -20,46 +21,83 @@ export class ContactServices {
       this.http = http;
       this.userServices = userServices;
     }
-
-
-    addNewContact(id: number, firstName: String, lastName: String, email: String, addressStreet: String, addressCity: String, addressState: String, addressCode: number, addressCountry: String) {
-      this.contactList.push(
-        {
-          "id":id,
-          "firstName":firstName,
-          "lastName":lastName,
-          "email": email,
-          "addressStreet": addressStreet,
-          "addressCity": addressCity,
-          "addressState": addressState,
-          "addressCode": addressCode,
-          "addressCountry": addressCountry
+    //initiate contactList
+    init() {
+      let restMessage: RestMessage;
+      this.callListContact().subscribe(
+        data => {
+          restMessage = data;
+          console.log("restMessage recieved: status:"+restMessage.status);
+          if(restMessage.status == "success") {
+              this.contactList = restMessage.multipleResults;
+          }else{
+            this.contactList = this.setUpEmptyContactList();
+            //fire an event with "remote server error, try to login again"
+            //handle the error to give better explanation
+          }
+        },
+        error => {
+          console.log("error subscribing restMessage");
+          return 0;
         }
-      )
-      this.addContact(this.contactList[this.contactList.length-1]);
+      );
     }
-
-    getAll() {
+    //RestCall to get a list of Contacts
+    callListContact(){
+      console.log("callListContact, userService.id="+this.userServices.loggedUser.id);
       let body = "locale=fr_US&userId="+ this.userServices.loggedUser.id;
       let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
       let options = new RequestOptions({ headers: headers });
       return this.http.post(listContactURL, body, options)
-          .map(res => function(){console.log(res);res.json();})
+          .map(res => res.json())
+          .catch(this.handleError);
+    }
+    //RestCall to save a contact
+    callSaveContact(contact: Contact){
+      console.log("callSaveContact, userService.id="+this.userServices.loggedUser.id);
+      let body = "locale=fr_US&userId="+ this.userServices.loggedUser.id + this.stringifyContact(contact);
+      let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+      let options = new RequestOptions({ headers: headers });
+      return this.http.post(addContactURL, body, options)
+          .map(res => res.json())
           .catch(this.handleError);
     }
 
-    addContact(contact: Contact) {
-        let body = "locale=fr_US&userId="+ this.userServices.loggedUser.id + this.stringifyContact(contact);
-        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
-        let options = new RequestOptions({ headers: headers });
-        return this.http.post(addContactURL, body, options)
-            .map(res => res.json())
-            .catch(this.handleError);
+    getAll() {
+      return this.contactList;
+    }
+    getContactListSize(){
+      return this.contactList.length;
+    }
+    addContact(contact: Contact, callBack: (message:String,nav:any)=>void,nav: any) {
+      let restMessage: RestMessage;
+      this.callSaveContact(contact).subscribe(
+        data => {
+          restMessage = data;
+          console.log("restMessage recieved: status:"+restMessage.status);
+          if(restMessage.status == "success") {
+              this.contactList.push(restMessage.singleResult);
+              console.log("it's a sucess");
+              callBack("it's a sucess",nav);
+          }else{
+            //messageToDisplay = "error from server";
+            console.log("it's a failure");
+            callBack("it's a failure",nav);
+            //fire an event with "remote server error, contact could not be saved"
+            //handle the error to give better explanation
+          }
+        },
+        error => {
+          console.log("error subscribing restMessage");
+          //messageToDisplay = "server error";
+          console.log("oops pb!");
+          callBack("server error",nav);
+        }
+      );
     }
 
     stringifyContact(contact: Contact) {
       let output: String = "";
-
       if(contact.id) {
         output += "&id="+contact.id;
       }
@@ -94,5 +132,22 @@ export class ContactServices {
     handleError(error) {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
+    }
+    setUpEmptyContactList(){
+      let contactList: Contact[];
+      contactList = [
+      {
+        "id":"0",
+        "firstName":"",
+        "lastName":"",
+        "email": "",
+        "addressStreet": "",
+        "addressCity": "",
+        "addressState": "",
+        "addressCode": "",
+        "addressCountry": ""
+      }
+    ];
+    return contactList;
     }
 }

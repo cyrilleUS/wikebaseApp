@@ -20,7 +20,7 @@ export class ListContactPage {
   }
   onPageWillEnter() {
     /*to do just before the display of the page*/
-    this.contactServices.getAll().subscribe(contactList => this.contactList = this.convertResultToContactList(contactList));
+    this.contactList = this.contactServices.getAll();
   }
   onPageDidEnter(){}
   onPageWillLeave() {
@@ -33,10 +33,5 @@ export class ListContactPage {
   showNewContactPage() {
     let nav = this.app.getComponent("nav");
     nav.setRoot(NewContactPage);
-  }
-
-  convertResultToContactList(contactList: String) {
-    console.log(contactList);
-    return "";
   }
 }

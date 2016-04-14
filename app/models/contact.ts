@@ -1,12 +1,11 @@
 export class Contact {
-  id: number;
+  id: String;
   firstName: String;
   lastName: String;
   email: String;
   addressStreet: String;
   addressCity: String;
   addressState: String;
-  addressCode: number;
+  addressCode: String;
   addressCountry: String;
-
 }

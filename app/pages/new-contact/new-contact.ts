@@ -2,6 +2,7 @@ import {Page, IonicApp, Alert} from 'ionic-angular';
 import {ContactServices} from '../../services/contactServices';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 import {HomePage} from '../home/home';
+import {Contact} from '../../models/contact';
 
 @Page({
   templateUrl: 'build/pages/new-contact/new-contact.html'
@@ -53,27 +54,75 @@ export class NewContactPage {
   onPageWillUnload() {}
   onPageDidUnload() {}
 
-
+  successPopup(messageToDisplay: String, nav: any){
+    let alert = Alert.create({
+        title: 'Saving Contact',
+        message: ''+messageToDisplay,
+        buttons: [
+                { text:'Ok',
+                  handler: () => {
+                    nav.setPages([{page: HomePage }]);
+                  }
+              }]
+      });
+    //let nav = this.app.getComponent("nav");
+    nav.present(alert);
+  }
 
   addNewContact(event) {
     if(!this.contactForm.valid) {
-
+      console.log("form not valid");
     }
     else {
-      let id = this.contactServices.contactList.length;
-      this.contactServices.addNewContact(id, this.contactForm.value.firstName, this.contactForm.value.lastName, this.contactForm.value.email, this.contactForm.value.addressStreet, this.contactForm.value.addressCity, this.contactForm.value.addressState, this.contactForm.value.addressCode, this.contactForm.value.addressCountry);
-      let alert = Alert.create({
-          title: 'New Contact Save',
-          message: 'Your contact has been saved',
-          buttons: [
-                  { text:'Ok',
-                    handler: () => {
-                      nav.setPages([{page: HomePage }]);
-                    }
-                }]
-        });
-      let nav = this.app.getComponent("nav");
-      nav.present(alert);
+      let contact: Contact;
+      let id = ""+this.contactServices.getContactListSize()+1;
+      contact =
+      {
+        "id":id,
+        "firstName":this.contactForm.value.firstName,
+        "lastName":this.contactForm.value.lastName,
+        "email": this.contactForm.value.email,
+        "addressStreet": this.contactForm.value.addressStreet,
+        "addressCity": this.contactForm.value.addressState,
+        "addressState": this.contactForm.value.addressState,
+        "addressCode": this.contactForm.value.addressCode,
+        "addressCountry": this.contactForm.value.addressCountry
+      };
+
+      //let messageToDisplay = "";
+      this.contactServices.addContact(contact,this.successPopup,this.app.getComponent("nav"));
+      //console.log('in new-contact, messageToDisplay:'+messageToDisplay);
+
+      /*
+          //let resJSON: JSON = res;
+          console.log("res="+res);
+          //this.contactServices.addLocalContact(res);
+          let alert = Alert.create({
+              title: 'New Contact Save',
+              message: 'Your contact has been saved',
+              buttons: [
+                      { text:'Ok',
+                        handler: () => {
+                          nav.setPages([{page: HomePage }]);
+                        }
+                    }]
+            });
+          let nav = this.app.getComponent("nav");
+          nav.present(alert);
+        },
+        error => {
+          console.log("Error="+error)
+          let alert = Alert.create({
+              title: 'Errors',
+              message: 'There was an error with the server',
+              buttons: [
+                      { text:'Ok'
+                    }]
+            });
+          let nav = this.app.getComponent("nav");
+          nav.present(alert);
+        }
+      )*/
     }
   }
 }
