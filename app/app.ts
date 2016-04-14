@@ -8,6 +8,7 @@ import {NewContactPage} from './pages/new-contact/new-contact';
 import {ContactServices} from './services/contactServices';
 import {UserServices} from './services/userServices';
 import {Contact} from './models/contact';
+import {AuthentificationPage} from './pages/authentification/authentification';
 
 @App({
   templateUrl: 'build/app.html',
@@ -31,7 +32,7 @@ export class MyApp {
       { title: 'Contact List', component: ListContactPage },
       { title: 'New Contact', component: NewContactPage }
     ];
-    this.rootPage = HomePage;
+    this.rootPage = AuthentificationPage;
 
   }
 
@@ -40,7 +41,6 @@ export class MyApp {
       StatusBar.styleDefault();
     });
     this.userServices.init();
-    this.contactServices.init();
   }
 
   openPage(page) {

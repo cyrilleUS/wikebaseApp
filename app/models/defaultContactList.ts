@@ -6,7 +6,7 @@ export class DefaultContactList {
 
     this.contactList = [
     {
-      "id":"0",
+      "idContact":"0",
       "firstName":"",
       "lastName":"",
       "email": "",

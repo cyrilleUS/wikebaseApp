@@ -78,7 +78,7 @@ export class NewContactPage {
       let id = ""+this.contactServices.getContactListSize()+1;
       contact =
       {
-        "id":id,
+        "idContact":id,
         "firstName":this.contactForm.value.firstName,
         "lastName":this.contactForm.value.lastName,
         "email": this.contactForm.value.email,

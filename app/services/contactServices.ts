@@ -1,5 +1,4 @@
 import {Injectable} from 'angular2/core';
-import {DefaultContactList} from '../models/defaultContactList';
 import {Http, Headers, RequestOptions} from 'angular2/http';
 import {Contact} from '../models/contact';
 import {Observable} from 'rxjs/Observable';
@@ -44,8 +43,8 @@ export class ContactServices {
     }
     //RestCall to get a list of Contacts
     callListContact(){
-      console.log("callListContact, userService.id="+this.userServices.loggedUser.id);
-      let body = "locale=fr_US&userId="+ this.userServices.loggedUser.id;
+      console.log("callListContact, userService.id="+this.userServices.loggedUser.idUser);
+      let body = "locale=fr_US&userId="+ this.userServices.loggedUser.idUser;
       let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
       let options = new RequestOptions({ headers: headers });
       return this.http.post(listContactURL, body, options)
@@ -54,8 +53,8 @@ export class ContactServices {
     }
     //RestCall to save a contact
     callSaveContact(contact: Contact){
-      console.log("callSaveContact, userService.id="+this.userServices.loggedUser.id);
-      let body = "locale=fr_US&userId="+ this.userServices.loggedUser.id + this.stringifyContact(contact);
+      console.log("callSaveContact, userService.id="+this.userServices.loggedUser.idUser);
+      let body = "locale=fr_US&userId="+ this.userServices.loggedUser.idUser + this.stringifyContact(contact);
       let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
       let options = new RequestOptions({ headers: headers });
       return this.http.post(addContactURL, body, options)
@@ -98,8 +97,8 @@ export class ContactServices {
 
     stringifyContact(contact: Contact) {
       let output: String = "";
-      if(contact.id) {
-        output += "&id="+contact.id;
+      if(contact.idContact) {
+        output += "&id="+contact.idContact;
       }
       if(contact.firstName) {
         output += "&firstName="+contact.firstName;
@@ -137,7 +136,7 @@ export class ContactServices {
       let contactList: Contact[];
       contactList = [
       {
-        "id":"0",
+        "idContact":"0",
         "firstName":"",
         "lastName":"",
         "email": "",
