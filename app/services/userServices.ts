@@ -112,10 +112,21 @@ export class UserServices {
         outputErrorMessage += "no detail to display";
         console.log( loggerHeader + loggerMethod + "EmptyErrors: " + restErrors.empty );
       }
-      return Observable.create(observer => {
+
+      let observableErrorMessage = Observable.create(
+        observer => {
+          try {
               observer.next(outputErrorMessage);
               observer.complete();
-              });
+          } catch (error){
+            observer.error(error);
+          }
+          return () => {
+            //what we should do if we cancel the observable with dispose() or when an error is thrown
+          }
+        }
+      );
+      return observableErrorMessage;
     }
 //******************************************************************************
 //PRIVATE METHODS***************************************************************
