@@ -14,9 +14,8 @@ export class NewContactPage {
   lastName: AbstractControl;
   email: AbstractControl;
 
-  constructor(contactServices: ContactServices, form: FormBuilder,  private app: IonicApp) {
+  constructor( contactServices: ContactServices, form: FormBuilder,  private app: IonicApp ) {
     this.contactServices = contactServices;
-
     this.contactForm = form.group ({
       firstName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
       lastName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -27,23 +26,18 @@ export class NewContactPage {
       addressCode:[''],
       addressCountry:['']
     })
-
     this.firstName = this.contactForm.controls['firstName'];
     this.lastName = this.contactForm.controls['lastName'];
     this.email = this.contactForm.controls['email'];
-
   }
 
-  emailValidForm(c: Control) {
+  emailValidForm( control: Control ) {
     var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
-
-        if (c.value != "" && (c.value.length <= 5 || !EMAIL_REGEXP.test(c.value))) {
-            return { "emailValidForm": true };
-        }
-
-        return null;
+    if (control.value != "" && (control.value.length <= 5 || !EMAIL_REGEXP.test(control.value))) {
+      return { "emailValidForm": true };
+    }
+    return null;
   }
-
   onPageLoaded(){
     //to do when we load the page the first time
     //works the same as ngOnInit
@@ -59,56 +53,49 @@ export class NewContactPage {
   onPageWillUnload() {}
   onPageDidUnload() {}
 
-  successPopup(messageToDisplay: String, nav: any){
+  successPopup( messageToDisplay: String, nav: any ){
     let alert = Alert.create({
         title: 'Contact Saved',
         message: ''+messageToDisplay,
         buttons: [
                 { text:'Ok',
                   handler: () => {
-                    nav.setPages([{page: HomePage }]);
+                    nav.setPages( [
+                      {page: HomePage}
+                    ] );
                   }
               }]
       });
-    //let nav = this.app.getComponent("nav");
     nav.present(alert);
   }
-  errorPopup(messageToDisplay: String, nav: any){
+  errorPopup( messageToDisplay: String, nav: any ){
     let alert = Alert.create({
         title: 'An Error Occured...',
         message: ''+messageToDisplay,
         buttons: [
                 { text:'Ok',
                   handler: () => {
-                    nav.setPages([{page: HomePage }]);
+                    nav.setPages( [
+                      {page: HomePage }
+                    ]);
                   }
               }]
       });
-    //let nav = this.app.getComponent("nav");
     nav.present(alert);
   }
 
-  addNewContact(event) {
-    if(!this.contactForm.valid) {
-      console.log("form not valid");
+  addNewContact( event ) {
+    if( !this.contactForm.valid ) {
+      this.errorPopup( "invalid form", this.app.getComponent("nav") );
     }
     else {
       let contact: Contact;
-      let id = ""+this.contactServices.getContactListSize()+1;
-      console.log("values:");
-      console.log("firstName:"+this.contactForm.value.firstName);
-      console.log("lastName:"+this.contactForm.value.lastName);
-      console.log("email:"+this.contactForm.value.email);
-      console.log("addressStreet:"+this.contactForm.value.addressStreet);
-      console.log("addressCity:"+this.contactForm.value.addressCity);
-      console.log("addressState:"+ this.contactForm.value.addressState);
-      console.log("addressCode:"+this.contactForm.value.addressCode);
-      console.log("addressCountry:"+this.contactForm.value.addressCountry);
+      let id = "" + ( this.contactServices.getContactListSize() + 1 );
       contact =
       {
-        "idContact":id,
-        "firstName":this.contactForm.value.firstName,
-        "lastName":this.contactForm.value.lastName,
+        "idContact": id,
+        "firstName": this.contactForm.value.firstName,
+        "lastName": this.contactForm.value.lastName,
         "email": this.contactForm.value.email,
         "addressStreet": this.contactForm.value.addressStreet,
         "addressCity": this.contactForm.value.addressCity,
@@ -116,41 +103,7 @@ export class NewContactPage {
         "addressCode": this.contactForm.value.addressCode,
         "addressCountry": this.contactForm.value.addressCountry
       };
-
-      //let messageToDisplay = "";
-      this.contactServices.addContact( contact, this.successPopup, this.app.getComponent("nav"), this.errorPopup);
-      //console.log('in new-contact, messageToDisplay:'+messageToDisplay);
-
-      /*
-          //let resJSON: JSON = res;
-          console.log("res="+res);
-          //this.contactServices.addLocalContact(res);
-          let alert = Alert.create({
-              title: 'New Contact Save',
-              message: 'Your contact has been saved',
-              buttons: [
-                      { text:'Ok',
-                        handler: () => {
-                          nav.setPages([{page: HomePage }]);
-                        }
-                    }]
-            });
-          let nav = this.app.getComponent("nav");
-          nav.present(alert);
-        },
-        error => {
-          console.log("Error="+error)
-          let alert = Alert.create({
-              title: 'Errors',
-              message: 'There was an error with the server',
-              buttons: [
-                      { text:'Ok'
-                    }]
-            });
-          let nav = this.app.getComponent("nav");
-          nav.present(alert);
-        }
-      )*/
+      this.contactServices.addContact( contact, this.successPopup, this.app.getComponent("nav"), this.errorPopup );
     }
   }
 

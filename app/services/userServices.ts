@@ -20,18 +20,13 @@ export class UserServices {
     constructor ( http: Http ) {
       this.http = http;
     }
-
-    getUserForLogin() {
-      return Observable.create(observer => {
-          observer.next(this.loggedUser);
-          observer.complete();
-      });
+    init(){
+      this.initUser();
     }
 
-    init() {
-      //nothing to do
-    }
-
+//******************************************************************************
+//REST CALLS********************************************************************
+//******************************************************************************
     callLogin( user:User ) {
       console.log("callLogin, user.email="+user.email+", user.password="+user.password);
       let body = "locale=fr_US&email=" + user.email + "&password=" + user.password;
@@ -45,72 +40,95 @@ export class UserServices {
           .map( res => res.json() )
           .catch( this.handleCallError );
     }
-    login( user: User, successCallback: ( nav: any ) => void, nav:any, errorCallback: ( errorMessage: string, nav: any ) => void ) {
+//******************************************************************************
+//PUBLIC METHODS****************************************************************
+//******************************************************************************
+    login( user: User, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
       let loggerMethod: string = ".login";
       let restMessage: RestMessage;
       this.callLogin( user ).subscribe(
+        //observable.next
         data => {
           restMessage = data;
-          if(restMessage.status == "success") {
-              this.loggedUser = restMessage.singleResult;
-              successCallback(nav);
-          }else if ( restMessage.status == "failure" ){
-            let restErrors: RestErrors = restMessage.errors;
-            let fieldErrors: Array<FieldError>;
-            let globalErrors: Array<GlobalError>;
-            let outputErrorMessage : string = "";
-            if ( restErrors.fieldErrors && ( restErrors.fieldErrors.length != 0 ) ){
-              fieldErrors = restErrors.fieldErrors;
-              fieldErrors.forEach(
-                  (data) => {
-                    outputErrorMessage += data.fieldName;
-                    outputErrorMessage += ": "
-                    outputErrorMessage += data.userErrorMessage;
-                    console.log( loggerHeader + loggerMethod + " fieldError: " + data.technicalErrorMessage );
-                  }
-              );
-            }else if( restErrors.globalErrors && ( restErrors.globalErrors.length != 0 ) ){
-                globalErrors = restErrors.globalErrors;
-                globalErrors.forEach(
-                    (data) => {
-                      outputErrorMessage += data.userErrorMessage;
-                      console.log( loggerHeader + loggerMethod + " globalError: " + data.technicalErrorMessage + " " + data.technicalErrorDetails );
-                    }
-                );
-            }else{
-              outputErrorMessage += "no detail to display";
-              console.log( loggerHeader + loggerMethod + "EmptyErrors: " + restErrors.empty );
-            }
-            errorCallback(outputErrorMessage,nav);
-          }else{
-            let errorMessage = "restMessageStatus undefinied: bad request";
-            console.error( loggerHeader + loggerMethod + errorMessage);
-            errorCallback("the server did not respond correctly",nav);
-          }
-
         },
+        //observable.error
         error => {
-          console.error( loggerHeader + loggerMethod + "error subscribing restMessage" );
-          errorCallback("internal error or connection aborted",nav);
+          console.error( loggerHeader + loggerMethod + "error subscribing restMessage" + error);
+          //errorCallback("internal error or connection aborted",nav);
+        },
+        //observable.complete
+        () => {
+        if(restMessage.status == "success") {
+            this.loggedUser = restMessage.singleResult;
+            successCallback(component);
+        }else if ( restMessage.status == "failure" ){
+          //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);
+          errorCallback( this.handleRestMessageError( restMessage.errors, loggerMethod), component );
+        }else{
+          let errorMessage = "restMessageStatus undefinied: bad request";
+          console.error( loggerHeader + loggerMethod + errorMessage);
+          //errorCallback("the server did not respond correctly",nav);
         }
+      }
       );
     }
+    deleteLoggedUser() {
 
+
+      this.initUser();
+    }
+//******************************************************************************
+//ERRORS HANDLING***************************************************************
+//******************************************************************************
     handleCallError(error) {
         console.error( error );
         return Observable.throw( error.json().error || 'Server error' );
     }
 
-    deleteLoggedUser() {
-      let user: User = {
-        "idUser": "",
-        "firstName": "",
-        "lastName": "",
-        "email": "",
-        "password": "",
-        "sessionToken": ""
-      };
-      this.loggedUser = user;
+    handleRestMessageError(restErrors: RestErrors, loggerMethod: string){
+      loggerMethod += ".handleRestMessageError";
+      let outputErrorMessage : string = "";
+      let fieldErrors: Array<FieldError>;
+      let globalErrors: Array<GlobalError>;
+      if ( restErrors.fieldErrors && ( restErrors.fieldErrors.length != 0 ) ){
+        fieldErrors = restErrors.fieldErrors;
+        fieldErrors.forEach(
+            (data) => {
+              outputErrorMessage += data.fieldName;
+              outputErrorMessage += ": "
+              outputErrorMessage += data.userErrorMessage;
+              console.log( loggerHeader + loggerMethod + " fieldError: " + data.technicalErrorMessage );
+            }
+        );
+      }else if( restErrors.globalErrors && ( restErrors.globalErrors.length != 0 ) ){
+          globalErrors = restErrors.globalErrors;
+          globalErrors.forEach(
+              (data) => {
+                outputErrorMessage += data.userErrorMessage;
+                console.log( loggerHeader + loggerMethod + " globalError: " + data.technicalErrorMessage + " " + data.technicalErrorDetails );
+              }
+          );
+      }else{
+        outputErrorMessage += "no detail to display";
+        console.log( loggerHeader + loggerMethod + "EmptyErrors: " + restErrors.empty );
+      }
+      return Observable.create(observer => {
+              observer.next(outputErrorMessage);
+              observer.complete();
+              });
     }
+//******************************************************************************
+//PRIVATE METHODS***************************************************************
+//******************************************************************************
+private initUser() {
+  this.loggedUser = {
+    "idUser": "",
+    "firstName": "",
+    "lastName": "",
+    "email": "",
+    "password": "",
+    "sessionToken": ""
+  };
 }
-//good: "id":1554,
+
+}
