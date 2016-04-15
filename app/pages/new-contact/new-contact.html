@@ -34,23 +34,23 @@
         class="error-box">* You need a valid email address!</div>
     <ion-item>
       <ion-label id="addressStreetLabel" for="addressStreet">Address street</ion-label>
-      <ion-input id="addressStreet" type="text"></ion-input>
+      <ion-input id="addressStreet" ngControl="addressStreet" type="text"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label id="addressCityLabel" for="addressCity">Address city</ion-label>
-      <ion-input id="addressCity" type="text"></ion-input>
+      <ion-input id="addressCity" ngControl="addressCity" type="text"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label id="addressStateLabel" for="addressState">Address state</ion-label>
-      <ion-input id="addressState" type="text"></ion-input>
+      <ion-input id="addressState" ngControl="addressState" type="text"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label id="addressCodeLabel" for="addressCode">Address code</ion-label>
-      <ion-input id="addressCode" type="text"></ion-input>
+      <ion-input id="addressCode" ngControl="addressCode" type="text"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label id="addressCountryLabel" for="addressCountry">Address country</ion-label>
-      <ion-input id="addressCountry" type="text"></ion-input>
+      <ion-input id="addressCountry" ngControl="addressCountry" type="text"></ion-input>
     </ion-item>
     <button block [disabled]="!contactForm.valid" type="submit">Submit</button>
   </form>

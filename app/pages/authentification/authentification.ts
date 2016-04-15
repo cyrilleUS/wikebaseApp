@@ -42,49 +42,49 @@ export class AuthentificationPage {
 
   login(event) {
     if(!this.loginForm.valid) {
-      console.log("form not valid");
+      console.error("form not valid");
     }
     else {
-      let user: User;
-      user = {
-        "idUser": "",
+      let user: User = {
+        "idUser":"",
         "email": this.loginForm.value.email,
         "password": this.loginForm.value.password,
         "firstName": "",
-        "lastName": ""
+        "lastName": "",
+        "sessionToken": ""
       };
 
-      this.userServices.login(user, this.successPopup, this.app.getComponent("nav"));
+      this.userServices.login(user, this.successPopup, this.app.getComponent("nav"), this.errorPopup);
     }
   }
 
-  successPopup(messageToDisplay: String, nav: any){
-        if(messageToDisplay == "it's a sucess") {
-          let alert = Alert.create({
-              title: 'Signing in',
-              message: ''+messageToDisplay,
-              buttons: [
-                  { text:'Ok',
-                    handler: () => {
-                      nav.setPages([{page: HomePage }]);
-                    }
-                }]
-            });
-
-            nav.present(alert);
-        }
-        else {
-          let alert = Alert.create({
-              title: 'Signing in',
-              message: ''+messageToDisplay,
-              buttons: [
-                  { text:'Try again'
-                }]
-            });
-          nav.present(alert);
-        }
-
+  successPopup( nav: any ){
+      let alert = Alert.create({
+        title: "Login Success",
+        message: "You are now able to access all you\'re online Data",
+        buttons: [
+          { text:"ok",
+            handler: () => {
+              nav.setPages([{page: HomePage }]);
+            }
+          }
+        ]
+      });
+      nav.present(alert);
+  }
+  errorPopup(messageToDisplay: String, nav: any){
+    let alert = Alert.create({
+        title: 'Login Failed',
+        message: ''+messageToDisplay,
+        buttons: [
+                { text:'Ok',
+                  handler: () => {
+                    //nav.setPages([{page: HomePage }]);
+                  }
+              }]
+      });
     //let nav = this.app.getComponent("nav");
+    nav.present(alert);
   }
 
   onPageWillLeave() {

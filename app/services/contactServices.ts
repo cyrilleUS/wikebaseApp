@@ -27,6 +27,7 @@ export class ContactServices {
     }
     //initiate contactList
     init() {
+      let loggerMethod: string = ".init";
       let restMessage: RestMessage;
       //call http post, response is already parsed to json
       this.callListContact().subscribe(
@@ -50,7 +51,7 @@ export class ContactServices {
                     outputErrorMessage += data.fieldName;
                     outputErrorMessage += ": "
                     outputErrorMessage += data.userErrorMessage;
-                    console.log( loggerHeader + " fieldError: " + data.technicalErrorMessage );
+                    console.log( loggerHeader + loggerMethod + " fieldError: " + data.technicalErrorMessage );
                   }
               );
             }else if( restErrors.globalErrors && ( restErrors.globalErrors.length != 0 ) ){
@@ -58,12 +59,12 @@ export class ContactServices {
                 globalErrors.forEach(
                     (data) => {
                       outputErrorMessage += data.userErrorMessage;
-                      console.log( loggerHeader + " globalError: " + data.technicalErrorMessage + " " + data.technicalErrorDetails );
+                      console.log( loggerHeader + loggerMethod + " globalError: " + data.technicalErrorMessage + " " + data.technicalErrorDetails );
                     }
                 );
             }else{
               outputErrorMessage += "no detail to display";
-              console.log( loggerHeader + "EmptyErrors: " + restErrors.empty );
+              console.log( loggerHeader + loggerMethod + "EmptyErrors: " + restErrors.empty );
             }
             if ( outputErrorMessage.length != 0 ){
               this.initErrorMessage = outputErrorMessage;
@@ -71,18 +72,23 @@ export class ContactServices {
           }else{
             this.contactList = this.setUpEmptyContactList();
             this.initErrorMessage = "restMessageStatus undefinied: bad request";
-            console.error(loggerHeader+"restMessageStatus undefinied: bad request");
+            console.error(loggerHeader + loggerMethod + "restMessageStatus undefinied: bad request");
           }
         },
         error => {
           this.initErrorMessage = "error subscribing restMessage" + error;
-          console.error( loggerHeader + "error subscribing restMessage" + error );
+          console.error( loggerHeader + loggerMethod + ", error subscribing restMessage: " + error );
         }
       );
     }
     //RestCall to get a list of Contacts
     callListContact(){
-      let body = "locale=fr_US&userId=" + this.userServices.loggedUser.idUser;
+
+      let body = "locale=fr_US";
+      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
+        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+        body += "&sessionToken=" + sessionToken;
+      }
       let headers = new Headers({
         'Content-Type': 'application/x-www-form-urlencoded'
       });
@@ -95,8 +101,14 @@ export class ContactServices {
     }
     //RestCall to save a contact
     callSaveContact( contact: Contact ){
-      console.log("callSaveContact, userService.id="+this.userServices.loggedUser.idUser);
-      let body = "locale=fr_US&userId=" + this.userServices.loggedUser.idUser + this.stringifyContact(contact);
+      //console.log("callSaveContact, userService.id="+this.userServices.loggedUser.idUser);
+      let body = "locale=fr_US";
+      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
+        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+        body += "&sessionToken=" + sessionToken;
+      }
+      body += this.stringifyContact(contact);
+      console.log("before request, body="+body);
       let headers = new Headers({
         'Content-Type': 'application/x-www-form-urlencoded'
       });
@@ -115,61 +127,68 @@ export class ContactServices {
       return this.contactList.length;
     }
     addContact( contact: Contact, successCallback: ( message: string, nav:any ) => void, nav: any, errorCallback: ( message: string, nav:any ) => void ) {
+      let loggerMethod: string = ".addContact";
       let restMessage: RestMessage;
       this.callSaveContact(contact).subscribe(
         data => {
           restMessage = data;
           if(restMessage.status == "success") {
               this.contactList.push(restMessage.singleResult);
-              //console.log("it's a sucess");
-              successCallback("it's a sucess",nav);
+              successCallback("sucessfully!",nav);
+          }else if ( restMessage.status == "failure" ){
+            let restErrors: RestErrors = restMessage.errors;
+            let fieldErrors: Array<FieldError>;
+            let globalErrors: Array<GlobalError>;
+            let outputErrorMessage : string = "";
+            if ( restErrors.fieldErrors && ( restErrors.fieldErrors.length != 0 ) ){
+              fieldErrors = restErrors.fieldErrors;
+              fieldErrors.forEach(
+                  (data) => {
+                    outputErrorMessage += data.fieldName;
+                    outputErrorMessage += ": "
+                    outputErrorMessage += data.userErrorMessage;
+                    console.log( loggerHeader + loggerMethod + " fieldError: " + data.technicalErrorMessage );
+                  }
+              );
+            }else if( restErrors.globalErrors && ( restErrors.globalErrors.length != 0 ) ){
+                globalErrors = restErrors.globalErrors;
+                globalErrors.forEach(
+                    (data) => {
+                      outputErrorMessage += data.userErrorMessage;
+                      console.log( loggerHeader + loggerMethod + " globalError: " + data.technicalErrorMessage + " " + data.technicalErrorDetails );
+                    }
+                );
+            }else{
+              outputErrorMessage += "no detail to display";
+              console.log( loggerHeader + loggerMethod + "EmptyErrors: " + restErrors.empty );
+            }
+            errorCallback(outputErrorMessage,nav);
           }else{
-            //messageToDisplay = "error from server";
-            console.log("it's a failure");
-            errorCallback("it's a failure",nav);
-            //fire an event with "remote server error, contact could not be saved"
-            //handle the error to give better explanation
+            this.contactList = this.setUpEmptyContactList();
+            let errorMessage = "restMessageStatus undefinied: bad request";
+            console.error( loggerHeader + loggerMethod + errorMessage);
+            errorCallback("the server did not respond correctly",nav);
           }
+
         },
         error => {
-          console.log("error subscribing restMessage");
-          //messageToDisplay = "server error";
-          console.log("oops pb!");
-          errorCallback("server error",nav);
+          console.error( loggerHeader + loggerMethod + "error subscribing restMessage" );
+          errorCallback("internal error",nav);
         }
       );
     }
 
     stringifyContact(contact: Contact) {
       let output: string = "";
-      if(contact.idContact) {
-        output += "&id="+contact.idContact;
-      }
-      if(contact.firstName) {
-        output += "&firstName="+contact.firstName;
-      }
-      if(contact.lastName) {
-        output += "&lastName="+contact.lastName;
-      }
-      if(contact.email) {
-        output += "&email="+contact.email;
-      }
-      if(contact.addressStreet) {
-        output += "&addressStreet="+contact.addressStreet;
-      }
-      if(contact.addressCity) {
-        output += "&addressCity="+contact.addressCity;
-      }
-      if(contact.addressState) {
-        output += "&addressState="+contact.addressState;
-      }
-      if(contact.addressCode) {
-        output += "&addressCode="+contact.addressCode;
-      }
-      if(contact.addressCountry) {
-        output += "&addressCountry="+contact.addressCountry;
-      }
-
+      if(contact.idContact) { console.log("stringifiying idContact: "+contact.idContact); output += "&id="+contact.idContact; }
+      if(contact.firstName) { console.log("stringifiying firstName: "+contact.firstName); output += "&firstName="+contact.firstName; }
+      if(contact.lastName) { console.log("stringifiying lastName: "+contact.lastName); output += "&lastName="+contact.lastName; }
+      if(contact.email) { console.log("stringifiying email: "+contact.email); output += "&email="+contact.email; }
+      if(contact.addressStreet) { console.log("stringifiying addressStreet: "+contact.addressStreet); output += "&addressStreet="+contact.addressStreet; }
+      if(contact.addressCity) { console.log("stringifiying addressCity: "+contact.addressCity); output += "&addressCity="+contact.addressCity; }
+      if(contact.addressState) { console.log("stringifiying addressState: "+contact.addressState); output += "&addressState="+contact.addressState; }
+      if(contact.addressCode) { console.log("stringifiying addressCode: "+contact.addressCode); output += "&addressCode="+contact.addressCode; }
+      if(contact.addressCountry) { console.log("stringifiying addressCountry: "+contact.addressCountry); output += "&addressCountry="+contact.addressCountry; }
       return output;
     }
 
@@ -178,20 +197,10 @@ export class ContactServices {
         return Observable.throw(error.json().error || 'Server error');
     }
     setUpEmptyContactList(){
-      let contactList: Contact[];
-      contactList = [
-      {
-        "idContact":"0",
-        "firstName":"",
-        "lastName":"",
-        "email": "",
-        "addressStreet": "",
-        "addressCity": "",
-        "addressState": "",
-        "addressCode": "",
-        "addressCountry": ""
-      }
-    ];
+      console.log("setUpEmptyContactList");
+      let contactList: Array<Contact>;
+      let emptyContact: Contact = {"idContact": "","firstName": "","lastName": "","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": ""};
+      contactList = [emptyContact];
     return contactList;
     }
 }

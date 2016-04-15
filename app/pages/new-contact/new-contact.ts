@@ -21,6 +21,11 @@ export class NewContactPage {
       firstName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
       lastName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
       email: ['', Validators.compose([Validators.required, this.emailValidForm])],
+      addressStreet: [''],
+      addressCity:[''],
+      addressState:[''],
+      addressCode:[''],
+      addressCountry:['']
     })
 
     this.firstName = this.contactForm.controls['firstName'];
@@ -70,7 +75,7 @@ export class NewContactPage {
   }
   errorPopup(messageToDisplay: String, nav: any){
     let alert = Alert.create({
-        title: 'Error',
+        title: 'An Error Occured...',
         message: ''+messageToDisplay,
         buttons: [
                 { text:'Ok',
@@ -90,6 +95,15 @@ export class NewContactPage {
     else {
       let contact: Contact;
       let id = ""+this.contactServices.getContactListSize()+1;
+      console.log("values:");
+      console.log("firstName:"+this.contactForm.value.firstName);
+      console.log("lastName:"+this.contactForm.value.lastName);
+      console.log("email:"+this.contactForm.value.email);
+      console.log("addressStreet:"+this.contactForm.value.addressStreet);
+      console.log("addressCity:"+this.contactForm.value.addressCity);
+      console.log("addressState:"+ this.contactForm.value.addressState);
+      console.log("addressCode:"+this.contactForm.value.addressCode);
+      console.log("addressCountry:"+this.contactForm.value.addressCountry);
       contact =
       {
         "idContact":id,
@@ -97,7 +111,7 @@ export class NewContactPage {
         "lastName":this.contactForm.value.lastName,
         "email": this.contactForm.value.email,
         "addressStreet": this.contactForm.value.addressStreet,
-        "addressCity": this.contactForm.value.addressState,
+        "addressCity": this.contactForm.value.addressCity,
         "addressState": this.contactForm.value.addressState,
         "addressCode": this.contactForm.value.addressCode,
         "addressCountry": this.contactForm.value.addressCountry
