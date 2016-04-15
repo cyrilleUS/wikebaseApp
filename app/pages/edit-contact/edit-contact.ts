@@ -3,6 +3,7 @@ import {ContactServices} from '../../services/contactServices';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 import {HomePage} from '../home/home';
 import {Contact} from '../../models/contact';
+import {Observable} from 'rxjs/Observable';
 
 @Page({
   templateUrl: 'build/pages/edit-contact/edit-contact.html'
@@ -61,10 +62,10 @@ export class EditContactPage {
   onPageWillUnload() {}
   onPageDidUnload() {}
 
-  successPopup(messageToDisplay: String, nav: any){
+  successPopup(nav: any){
     let alert = Alert.create({
         title: 'Contact Saved',
-        message: ''+messageToDisplay,
+        message: "Your contact edit succeed !",
         buttons: [
                 { text:'Ok',
                   handler: () => {
@@ -72,22 +73,33 @@ export class EditContactPage {
                   }
               }]
       });
-    //let nav = this.app.getComponent("nav");
     nav.present(alert);
   }
-  errorPopup(messageToDisplay: String, nav: any){
-    let alert = Alert.create({
-        title: 'An Error Occured...',
-        message: ''+messageToDisplay,
-        buttons: [
-                { text:'Ok',
-                  handler: () => {
-                    nav.setPages([{page: HomePage }]);
-                  }
-              }]
-      });
-    //let nav = this.app.getComponent("nav");
-    nav.present(alert);
+  errorPopup(messageToDisplay: Observable<string>, nav: any){
+    let message: string;
+    messageToDisplay.subscribe(
+      //
+      data => {
+        message = data;
+      }, error => {
+        //todo
+      }, () => {
+        let alert = Alert.create(
+          {
+            title: 'Editing Contact Failed',
+            message: ''+ message,
+            buttons: [
+              {
+                text:'Ok',
+                handler: () => {
+                  //do nothing on complete
+                }
+              }
+            ]
+          });
+          nav.present(alert);
+        }
+      );
   }
 
   addNewContact(event) {
@@ -96,19 +108,10 @@ export class EditContactPage {
     }
     else {
       let contact: Contact;
-      let id = ""+this.contactServices.getContactListSize()+1;
-      console.log("values:");
-      console.log("firstName:"+this.contactForm.value.firstName);
-      console.log("lastName:"+this.contactForm.value.lastName);
-      console.log("email:"+this.contactForm.value.email);
-      console.log("addressStreet:"+this.contactForm.value.addressStreet);
-      console.log("addressCity:"+this.contactForm.value.addressCity);
-      console.log("addressState:"+ this.contactForm.value.addressState);
-      console.log("addressCode:"+this.contactForm.value.addressCode);
-      console.log("addressCountry:"+this.contactForm.value.addressCountry);
+      let id = "";
       contact =
       {
-        "idContact":id,
+        "idContact":this.editedContact.idContact,
         "firstName":this.contactForm.value.firstName,
         "lastName":this.contactForm.value.lastName,
         "email": this.contactForm.value.email,
@@ -118,8 +121,10 @@ export class EditContactPage {
         "addressCode": this.contactForm.value.addressCode,
         "addressCountry": this.contactForm.value.addressCountry
       };
-
-      this.contactServices.addContact( contact, this.successPopup, this.app.getComponent("nav"), this.errorPopup);
+      let successCallback = this.successPopup;
+      let errorCallback = this.errorPopup;
+      let callbackComponent = this.app.getComponent("nav");
+      this.contactServices.editContact( contact, successCallback, errorCallback, callbackComponent);
     }
   }
 

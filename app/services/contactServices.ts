@@ -12,6 +12,7 @@ import 'rxjs/Rx';
 let favorites = [],
     listContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/listContact",
     addContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/addContact",
+    editContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/editContact",
     loggerHeader = "error in contactServices";
 
 @Injectable()
@@ -178,6 +179,57 @@ export class ContactServices {
       );
     }
 
+    callEditContact( contact: Contact ){
+      //console.log("callSaveContact, userService.id="+this.userServices.loggedUser.idUser);
+      let body = "locale=fr_US";
+      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
+        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+        body += "&sessionToken=" + sessionToken;
+      }
+      body += this.stringifyContact(contact);
+      console.log("before request, body="+body);
+      let headers = new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      });
+      let options = new RequestOptions({
+        headers: headers
+      });
+      return this.http.post( editContactURL, body, options )
+          .map(res => res.json())
+          .catch( this.handleCallError );
+    }
+
+    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
+      let loggerMethod: string = ".editContact";
+      let localContactIndex = this.contactList.indexOf(contact);
+      let restMessage: RestMessage;
+      this.callEditContact( contact ).subscribe(
+        //observable.next
+        data => {
+          restMessage = data;
+        },
+        //observable.error
+        error => {
+          console.error( loggerHeader + loggerMethod + "error subscribing restMessage" + error);
+          //errorCallback("internal error or connection aborted",nav);
+        },
+        //observable.complete
+        () => {
+        if(restMessage.status == "success") {
+            this.contactList.find(contact) = restMessage.singleResult;
+            successCallback(component);
+        }else if ( restMessage.status == "failure" ){
+          //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);
+          errorCallback( this.handleRestMessageError( restMessage.errors, loggerMethod), component );
+        }else{
+          let errorMessage = "restMessageStatus undefinied: bad request";
+          console.error( loggerHeader + loggerMethod + errorMessage);
+          //errorCallback("the server did not respond correctly",nav);
+        }
+      }
+      );
+    }
+
     stringifyContact(contact: Contact) {
       let output: string = "";
       if(contact.idContact) { console.log("stringifiying idContact: "+contact.idContact); output += "&id="+contact.idContact; }
@@ -196,6 +248,40 @@ export class ContactServices {
         console.error("error parding restMessage"+error);
         return Observable.throw(error.json().error || 'Server error');
     }
+
+    handleRestMessageError(restErrors: RestErrors, loggerMethod: string){
+      loggerMethod += ".handleRestMessageError";
+      let outputErrorMessage : string = "";
+      let fieldErrors: Array<FieldError>;
+      let globalErrors: Array<GlobalError>;
+      if ( restErrors.fieldErrors && ( restErrors.fieldErrors.length != 0 ) ){
+        fieldErrors = restErrors.fieldErrors;
+        fieldErrors.forEach(
+            (data) => {
+              outputErrorMessage += data.fieldName;
+              outputErrorMessage += ": "
+              outputErrorMessage += data.userErrorMessage;
+              console.log( loggerHeader + loggerMethod + " fieldError: " + data.technicalErrorMessage );
+            }
+        );
+      }else if( restErrors.globalErrors && ( restErrors.globalErrors.length != 0 ) ){
+          globalErrors = restErrors.globalErrors;
+          globalErrors.forEach(
+              (data) => {
+                outputErrorMessage += data.userErrorMessage;
+                console.log( loggerHeader + loggerMethod + " globalError: " + data.technicalErrorMessage + " " + data.technicalErrorDetails );
+              }
+          );
+      }else{
+        outputErrorMessage += "no detail to display";
+        console.log( loggerHeader + loggerMethod + "EmptyErrors: " + restErrors.empty );
+      }
+      return Observable.create(observer => {
+              observer.next(outputErrorMessage);
+              observer.complete();
+              });
+    }
+
     setUpEmptyContactList(){
       console.log("setUpEmptyContactList");
       let contactList: Array<Contact>;
