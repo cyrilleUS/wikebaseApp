@@ -10,13 +10,22 @@
 
 <ion-content id="list-contactContent" padding>
   <ion-list class="contactList" *ngFor="#contact of contactList">
-    <ion-item>
-      <ion-avatar item-left>
-        <img src="img/noPicture.png">
-      </ion-avatar>
-      <h2>{{contact.firstName}} {{contact.lastName}}</h2>
-      <h3>{{contact.email}}</h3>
-      <p>{{contact.addressStreet}} {{contact.addressCity}} {{contact.addressCode}} {{contact.addressState}} {{contact.addressCountry}}</p>
-    </ion-item>
+    <ion-item-sliding>
+      <ion-item>
+        <ion-avatar item-left>
+          <img src="img/noPicture.png">
+        </ion-avatar>
+        <h2>{{contact.firstName}} {{contact.lastName}}</h2>
+        <h3>{{contact.email}}</h3>
+        <p>{{contact.addressStreet}} {{contact.addressCity}}</p>
+        <p>{{contact.addressCode}} {{contact.addressState}} {{contact.addressCountry}}</p>
+      </ion-item>
+      <ion-item-options>
+        <button class="editContactButton" (click)="editContact(contact)">
+          <ion-icon name="create"></ion-icon>
+            Edit
+        </button>
+      </ion-item-options>
+  </ion-item-sliding>
   </ion-list>
 </ion-content>

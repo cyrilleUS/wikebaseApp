@@ -109,4 +109,8 @@ export class NewContactPage {
       this.contactServices.addContact( contact, successCallback, errorCallback, callbackComponent );
     }
   }
+
+  cancel() {
+    this.app.getComponent("nav").setRoot(HomePage);
+  }
 }

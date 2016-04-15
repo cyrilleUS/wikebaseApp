@@ -11,7 +11,8 @@ import 'rxjs/Rx';
 
 let favorites = [],
     listContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/listContact",
-    addContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/addContact"
+    addContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/addContact",
+    editContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/editContact"
 
 @Injectable()
 export class ContactServices {
@@ -75,7 +76,10 @@ export class ContactServices {
         }
       );
     }
-    //RestCall to get a list of Contacts
+//******************************************************************************
+//REST CALLS********************************************************************
+//******************************************************************************
+//get the list of Contacts accessible to the user
     callListContact(){
       let body = "locale=fr_US";
       if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
@@ -143,6 +147,7 @@ export class ContactServices {
       );
     }
 
+
     private toXformString(contact: Contact) {
       let output: string = "";
       if(contact.idContact) { output += "&id="+contact.idContact; }
@@ -157,6 +162,57 @@ export class ContactServices {
       return output;
     }
 
+
+    callEditContact( contact: Contact ){
+      //console.log("callSaveContact, userService.id="+this.userServices.loggedUser.idUser);
+      let body = "locale=fr_US";
+      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
+        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+        body += "&sessionToken=" + sessionToken;
+      }
+      body += this.toXformString(contact);
+      console.log("before request, body="+body);
+      let headers = new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      });
+      let options = new RequestOptions({
+        headers: headers
+      });
+      return this.http.post( editContactURL, body, options )
+          .map(res => res.json())
+          .catch( this.errorService.handleCallError );
+    }
+
+    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
+      let loggerMethod: string = ".editContact";
+      let localContactIndex = this.contactList.indexOf(contact);
+      let restMessage: RestMessage;
+      this.callEditContact( contact ).subscribe(
+        //observable.next
+        data => {
+          restMessage = data;
+        },
+        //observable.error
+        error => {
+          console.error( this._loggerHeader + loggerMethod + "error subscribing restMessage" + error);
+          //errorCallback("internal error or connection aborted",nav);
+        },
+        //observable.complete
+        () => {
+        if(restMessage.status == "success") {
+            this.contactList[localContactIndex] = restMessage.singleResult;
+            successCallback(component);
+        }else if ( restMessage.status == "failure" ){
+          //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);
+          errorCallback( this.errorService.handleRestMessageError( restMessage.errors, loggerMethod), component );
+        }else{
+          let errorMessage = "restMessageStatus undefinied: bad request";
+          console.error( this._loggerHeader + loggerMethod + errorMessage);
+          //errorCallback("the server did not respond correctly",nav);
+        }
+      }
+      );
+    }
     setUpEmptyContactList(){
       let contactList: Array<Contact>;
       let emptyContact: Contact = {"idContact": "","firstName": "","lastName": "","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": ""};

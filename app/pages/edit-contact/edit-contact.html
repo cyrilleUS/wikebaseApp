@@ -2,11 +2,11 @@
   <button menuToggle>
     <ion-icon name="menu"></ion-icon>
   </button>
-  <ion-title>New Contact</ion-title>
+  <ion-title>Edit Contact</ion-title>
 </ion-navbar>
 
 <ion-content id="new-contactContent" padding>
-  <form [ngFormModel]="contactForm" (submit)="addNewContact($event)">
+  <form [ngFormModel]="contactForm" (submit)="editContact($event)">
     <ion-item class="formInput" [class.error]="!firstName.valid && firstName.touched">
       <ion-label id="firstNameLabel" for="firstName">firstName</ion-label>
       <ion-input id="firstName" [ngFormControl]="firstName" type="text"></ion-input>
