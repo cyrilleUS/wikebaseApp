@@ -3,7 +3,7 @@ import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, Abstr
 import {HomePage} from '../home/home';
 import {UserServices} from '../../services/userServices';
 import {User} from '../../models/user';
-
+import {Observable} from 'rxjs/Observable';
 
 @Page({
   templateUrl: 'build/pages/authentification/authentification.html',
@@ -53,8 +53,10 @@ export class AuthentificationPage {
         "lastName": "",
         "sessionToken": ""
       };
-
-      this.userServices.login(user, this.successPopup, this.app.getComponent("nav"), this.errorPopup);
+      let successCallback = this.successPopup;
+      let errorCallback = this.errorPopup;
+      let callbackComponent = this.app.getComponent("nav");
+      this.userServices.login( user, successCallback, errorCallback, callbackComponent );
     }
   }
 
@@ -72,19 +74,31 @@ export class AuthentificationPage {
       });
       nav.present(alert);
   }
-  errorPopup(messageToDisplay: String, nav: any){
-    let alert = Alert.create({
-        title: 'Login Failed',
-        message: ''+messageToDisplay,
-        buttons: [
-                { text:'Ok',
-                  handler: () => {
-                    //nav.setPages([{page: HomePage }]);
-                  }
-              }]
-      });
-    //let nav = this.app.getComponent("nav");
-    nav.present(alert);
+  errorPopup(messageToDisplay: Observable<string>, nav: any){
+    let message: string;
+    messageToDisplay.subscribe(
+      //
+      data => {
+        message = data;
+      }, error => {
+        //todo
+      }, () => {
+        let alert = Alert.create(
+          {
+            title: 'Login Failed',
+            message: ''+ message,
+            buttons: [
+              {
+                text:'Ok',
+                handler: () => {
+                  //do nothing on complete
+                }
+              }
+            ]
+          });
+          nav.present(alert);
+        }
+      );
   }
 
   onPageWillLeave() {
