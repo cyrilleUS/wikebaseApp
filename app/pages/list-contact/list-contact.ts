@@ -3,6 +3,7 @@ import {ContactServices} from '../../services/contactServices';
 import {Contact} from '../../models/Contact';
 import {IonicApp} from 'ionic-angular';
 import {NewContactPage} from '../new-contact/new-contact';
+import {EditContactPage} from '../edit-contact/edit-contact';
 
 @Page({
   templateUrl: 'build/pages/list-contact/list-contact.html',
@@ -29,6 +30,12 @@ export class ListContactPage {
   onPageDidLeave() {}
   onPageWillUnload() {}
   onPageDidUnload() {}
+
+  editContact(contact: Contact) {
+    this.app.getComponent("nav").setRoot(EditContactPage, {
+      contact: contact
+    });
+  }
 
   showNewContactPage() {
     let nav = this.app.getComponent("nav");

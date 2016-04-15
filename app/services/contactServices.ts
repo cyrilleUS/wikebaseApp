@@ -216,7 +216,7 @@ export class ContactServices {
         //observable.complete
         () => {
         if(restMessage.status == "success") {
-            this.contactList.find(contact) = restMessage.singleResult;
+            this.contactList[localContactIndex] = restMessage.singleResult;
             successCallback(component);
         }else if ( restMessage.status == "failure" ){
           //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);
@@ -232,7 +232,7 @@ export class ContactServices {
 
     stringifyContact(contact: Contact) {
       let output: string = "";
-      if(contact.idContact) { console.log("stringifiying idContact: "+contact.idContact); output += "&id="+contact.idContact; }
+      if(contact.idContact) { console.log("stringifiying idContact: "+contact.idContact); output += "&idContact="+contact.idContact; }
       if(contact.firstName) { console.log("stringifiying firstName: "+contact.firstName); output += "&firstName="+contact.firstName; }
       if(contact.lastName) { console.log("stringifiying lastName: "+contact.lastName); output += "&lastName="+contact.lastName; }
       if(contact.email) { console.log("stringifiying email: "+contact.email); output += "&email="+contact.email; }
@@ -276,10 +276,21 @@ export class ContactServices {
         outputErrorMessage += "no detail to display";
         console.log( loggerHeader + loggerMethod + "EmptyErrors: " + restErrors.empty );
       }
-      return Observable.create(observer => {
+
+      let observableErrorMessage = Observable.create(
+        observer => {
+          try {
               observer.next(outputErrorMessage);
               observer.complete();
-              });
+          } catch (error){
+            observer.error(error);
+          }
+          return () => {
+            //what we should do if we cancel the observable with dispose() or when an error is thrown
+          }
+        }
+      );
+      return observableErrorMessage;
     }
 
     setUpEmptyContactList(){

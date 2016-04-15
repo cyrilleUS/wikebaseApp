@@ -17,10 +17,11 @@
         </ion-avatar>
         <h2>{{contact.firstName}} {{contact.lastName}}</h2>
         <h3>{{contact.email}}</h3>
-        <p>{{contact.addressStreet}} {{contact.addressCity}} {{contact.addressCode}} {{contact.addressState}} {{contact.addressCountry}}</p>
+        <p>{{contact.addressStreet}} {{contact.addressCity}}</p>
+        <p>{{contact.addressCode}} {{contact.addressState}} {{contact.addressCountry}}</p>
       </ion-item>
       <ion-item-options>
-        <button class="editContactButton">
+        <button class="editContactButton" (click)="editContact(contact)">
           <ion-icon name="create"></ion-icon>
             Edit
         </button>

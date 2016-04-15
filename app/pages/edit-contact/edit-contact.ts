@@ -1,4 +1,4 @@
-import {Page, IonicApp, Alert} from 'ionic-angular';
+import {Page, IonicApp, Alert, NavParams} from 'ionic-angular';
 import {ContactServices} from '../../services/contactServices';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 import {HomePage} from '../home/home';
@@ -16,24 +16,26 @@ export class EditContactPage {
   email: AbstractControl;
   editedContact: Contact;
 
-  constructor(contactServices: ContactServices, form: FormBuilder,  private app: IonicApp, editedContact: Contact) {
+  constructor(contactServices: ContactServices, form: FormBuilder,  private app: IonicApp, navParams: NavParams) {
     this.contactServices = contactServices;
-    this.editedContact = editedContact;
+    this.editedContact = navParams.get('contact');
 
     this.contactForm = form.group ({
-      firstName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
-      lastName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
-      email: ['', Validators.compose([Validators.required, this.emailValidForm])],
-      addressStreet: [''],
-      addressCity:[''],
-      addressState:[''],
-      addressCode:[''],
-      addressCountry:['']
+      firstName: [this.editedContact.firstName, Validators.compose([Validators.required, Validators.minLength(3)])],
+      lastName: [this.editedContact.lastName, Validators.compose([Validators.required, Validators.minLength(3)])],
+      email: [this.editedContact.email, Validators.compose([Validators.required, this.emailValidForm])],
+      addressStreet: [this.editedContact.addressStreet],
+      addressCity:[this.editedContact.addressCity],
+      addressState:[this.editedContact.addressState],
+      addressCode:[this.editedContact.addressCode],
+      addressCountry:[this.editedContact.addressCountry]
     })
 
     this.firstName = this.contactForm.controls['firstName'];
     this.lastName = this.contactForm.controls['lastName'];
     this.email = this.contactForm.controls['email'];
+
+    this.contactForm.value.firstName = this.editedContact.firstName;
 
   }
 
@@ -102,7 +104,7 @@ export class EditContactPage {
       );
   }
 
-  addNewContact(event) {
+  editContact(event) {
     if(!this.contactForm.valid) {
       console.log("form not valid");
     }
