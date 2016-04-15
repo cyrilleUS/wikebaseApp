@@ -1,7 +1,7 @@
-import {Page} from 'ionic-angular';
+import {Page, IonicApp} from 'ionic-angular';
 import {UserServices} from '../../services/userServices';
 import {ContactServices} from '../../services/contactServices';
-
+import {AuthentificationPage} from '../authentification/authentification';
 @Page({
   templateUrl: 'build/pages/home/home.html',
 })
@@ -9,7 +9,7 @@ import {ContactServices} from '../../services/contactServices';
 export class HomePage {
   ownerName: string;
   userServices: UserServices;
-  constructor(userServices: UserServices, contactServices: ContactServices) {
+  constructor(userServices: UserServices, contactServices: ContactServices, private app: IonicApp) {
     contactServices.init();
     this.userServices = userServices;
   }
@@ -27,4 +27,9 @@ export class HomePage {
   onPageDidLeave() {}
   onPageWillUnload() {}
   onPageDidUnload() {}
+
+  disconnect() {
+    this.userServices.deleteLoggedUser();
+    this.app.getComponent("nav").setRoot(AuthentificationPage);
+  }
 }

@@ -6,8 +6,13 @@
 </ion-navbar>
 
 <ion-content padding>
-  <h3>Hello {{ownerName}}</h3>
-  <ion-card>
-    <p>This is the home page, where we can display user's informations and where we'll authenticate on server later</p>
-  </ion-card>
+  <h2>Welcome to Wikebase mobile {{ownerName}}!</h2>
+  <p>Wikebase help you secure the knowledgre of your company.</p>
+  <h5>How to use this amazing concentrate of technologies?</h5>
+  <p>Swipe to the right to access the menu. You can get the contact list of your company, or create a new contact. Every action will have consequences on your database. Don't mess around boy.</p>
+  <h5>Who create such magical tool?</h5>
+  <p>This app was proudly brought to you by UniqueSound corporation. Made with love by Julien Carret & Cyrille Vanhulle.</p>
+  <h5>Still unconvinced?</h5>
+  <p>Well ... we cannot do anything for you. Let's get out of here.</p>
+  <button block (click)="disconnect()">Disconnect</button>
 </ion-content>
