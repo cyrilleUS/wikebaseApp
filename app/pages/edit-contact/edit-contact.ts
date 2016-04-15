@@ -5,17 +5,19 @@ import {HomePage} from '../home/home';
 import {Contact} from '../../models/contact';
 
 @Page({
-  templateUrl: 'build/pages/new-contact/new-contact.html'
+  templateUrl: 'build/pages/edit-contact/edit-contact.html'
 })
-export class NewContactPage {
+export class EditContactPage {
   contactServices: ContactServices;
   contactForm: ControlGroup;
   firstName: AbstractControl;
   lastName: AbstractControl;
   email: AbstractControl;
+  editedContact: Contact;
 
-  constructor(contactServices: ContactServices, form: FormBuilder,  private app: IonicApp) {
+  constructor(contactServices: ContactServices, form: FormBuilder,  private app: IonicApp, editedContact: Contact) {
     this.contactServices = contactServices;
+    this.editedContact = editedContact;
 
     this.contactForm = form.group ({
       firstName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -117,40 +119,7 @@ export class NewContactPage {
         "addressCountry": this.contactForm.value.addressCountry
       };
 
-      //let messageToDisplay = "";
       this.contactServices.addContact( contact, this.successPopup, this.app.getComponent("nav"), this.errorPopup);
-      //console.log('in new-contact, messageToDisplay:'+messageToDisplay);
-
-      /*
-          //let resJSON: JSON = res;
-          console.log("res="+res);
-          //this.contactServices.addLocalContact(res);
-          let alert = Alert.create({
-              title: 'New Contact Save',
-              message: 'Your contact has been saved',
-              buttons: [
-                      { text:'Ok',
-                        handler: () => {
-                          nav.setPages([{page: HomePage }]);
-                        }
-                    }]
-            });
-          let nav = this.app.getComponent("nav");
-          nav.present(alert);
-        },
-        error => {
-          console.log("Error="+error)
-          let alert = Alert.create({
-              title: 'Errors',
-              message: 'There was an error with the server',
-              buttons: [
-                      { text:'Ok'
-                    }]
-            });
-          let nav = this.app.getComponent("nav");
-          nav.present(alert);
-        }
-      )*/
     }
   }
 
