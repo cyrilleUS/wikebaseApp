@@ -1,3 +1,23 @@
-.page1 {
-
+#list-contactContent {
+  background-color: #F4F4F4;
+  scroll-content {
+    padding: 5px;
+  }
+}
+#addContactButton {
+  background-color: #00ADD5;
+  margin-left: 85%;
+}
+.contactCard {
+  background-color: white;
+  margin-bottom: 10px;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 5px;
+}
+ion-list {
+  margin: 0px;
+}
+ion-list + ion-list {
+  margin: 0px;
 }

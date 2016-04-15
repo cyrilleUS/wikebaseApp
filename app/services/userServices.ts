@@ -107,7 +107,8 @@ export class UserServices {
         "firstName": "",
         "lastName": "",
         "email": "",
-        "password": ""
+        "password": "",
+        "sessionToken": ""
       };
       this.loggedUser = user;
     }
