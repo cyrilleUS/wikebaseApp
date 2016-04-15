@@ -84,6 +84,7 @@ export class UserServices {
         console.error( error );
         return Observable.throw( error.json().error || 'Server error' );
     }
+
     handleRestMessageError(restErrors: RestErrors, loggerMethod: string){
       loggerMethod += ".handleRestMessageError";
       let outputErrorMessage : string = "";

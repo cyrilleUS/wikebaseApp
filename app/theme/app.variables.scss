@@ -10,7 +10,6 @@
 // in the app.core.scss file and not this file. Sass variables specific
 // to the mode belong in either the app.ios.scss or app.md.scss files.
 
-
 // App Shared Color Variables
 // --------------------------------------------------
 // It's highly recommended to change the default colors
@@ -26,5 +25,10 @@ $colors: (
   danger:     #f53d3d,
   light:      #f4f4f4,
   dark:       #222,
-  favorite:   #69BB7B
+  favorite:   #69BB7B,
+  wikebasePaleBlue: #00ADD5,
+  wikebaseFullBlue: #2A88F5,
+  wikebaseButton: #017B97,
+  wikebaseGrey: #989898,
+  wikebaseLightGrey: #F4F4F4
 );

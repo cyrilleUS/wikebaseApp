@@ -1,9 +1,9 @@
-<ion-navbar *navbar>
-  <ion-title>Sign in</ion-title>
+<ion-navbar wikebasePaleBlue *navbar>
+  <ion-title>Login</ion-title>
 </ion-navbar>
 
-<ion-content padding>
-  <p>Welcome to wikebase mobile! Please sign in to use the application.</p>
+<ion-content id="authentificationContent" padding>
+  <p id="loginTitle">Wikebase</p>
   <form [ngFormModel]="loginForm" (submit)="login($event)">
     <ion-item [class.error]="!email.valid && email.touched">
       <ion-label id="emailLabel" for="email">Email</ion-label>

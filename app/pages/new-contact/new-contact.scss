@@ -1,3 +1,28 @@
 .page3 {
 
 }
+#new-contactContent {
+  scroll-content {
+    background-color: #F4F4F4;
+  }
+}
+#formInput {
+  background-color: #F4F4F4;
+}
+#saveButton {
+  background-color: white;
+  margin-top: 5px;
+  color: #2A88F5;
+}
+#cancelButton {
+  background-color: white;
+  margin-top: 5px;
+  color: #F53D3D;
+}
+.error-box {
+  color: #F4F4F4;
+  background-color: white;
+  padding-left: 10px;
+  padding-top : 5px;
+  padding-bottom: 5px;
+}
