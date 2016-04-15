@@ -103,7 +103,10 @@ export class NewContactPage {
         "addressCode": this.contactForm.value.addressCode,
         "addressCountry": this.contactForm.value.addressCountry
       };
-      this.contactServices.addContact( contact, this.successPopup, this.app.getComponent("nav"), this.errorPopup );
+      let successCallback = this.successPopup;
+      let errorCallback = this.errorPopup;
+      let callbackComponent = this.app.getComponent("nav");
+      this.contactServices.addContact( contact, successCallback, errorCallback, callbackComponent );
     }
   }
 }
