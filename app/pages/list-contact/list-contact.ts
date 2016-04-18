@@ -40,13 +40,19 @@ export class ListContactPage {
     console.log("about to edit contact:"+contact.firstName);
     /*let modal = Modal.create(EditContactPage, contact);
     this.nav.present(modal);*/
-    this.app.getComponent("nav").setRoot(EditContactPage, {
+    let editContactModal = Modal.create(EditContactPage, {
       contact: contact
     });
+    this.app.getComponent("nav").present(editContactModal);
+    /*this.app.getComponent("nav").push(EditContactPage, {
+      contact: contact
+    });*/
   }
 
   showNewContactPage() {
-    let nav = this.app.getComponent("nav");
-    nav.setRoot(NewContactPage);
+    /*let nav = this.app.getComponent("nav");
+    nav.setRoot(NewContactPage);*/
+    let newContactModal = Modal.create(NewContactPage);
+    this.app.getComponent("nav").present(newContactModal);
   }
 }

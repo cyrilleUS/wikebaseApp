@@ -135,9 +135,9 @@ export class EditContactPage {
   }
 
   cancel() {
-    this.app.getComponent("nav").setRoot(ListContactPage);
+    //this.app.getComponent("nav").setRoot(ListContactPage);
 
-    //this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss();
 
   }
   delete(){

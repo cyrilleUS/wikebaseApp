@@ -1,4 +1,4 @@
-import {Page, IonicApp, Alert} from 'ionic-angular';
+import {Page, IonicApp, Alert, ViewController, NavController} from 'ionic-angular';
 import {ContactServices} from '../../services/contactServices';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 import {HomePage} from '../home/home';
@@ -14,7 +14,7 @@ export class NewContactPage {
   lastName: AbstractControl;
   email: AbstractControl;
 
-  constructor( contactServices: ContactServices, form: FormBuilder,  private app: IonicApp ) {
+  constructor( contactServices: ContactServices, form: FormBuilder,  private app: IonicApp, public viewCtrl: ViewController, public nav : NavController) {
     this.contactServices = contactServices;
     this.contactForm = form.group ({
       firstName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -111,6 +111,11 @@ export class NewContactPage {
   }
 
   cancel() {
-    this.app.getComponent("nav").setRoot(HomePage);
+    if(this.viewCtrl.viewType) {
+      this.viewCtrl.dismiss();
+    }
+    else {
+      this.nav.setRoot(HomePage);
+    }
   }
 }
