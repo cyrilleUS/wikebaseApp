@@ -12,13 +12,13 @@ export class ListContactPage {
 
 
   constructor( private app: IonicApp, private nav: NavController, private viewController: ViewController, private contactServices: ContactServices ) {
-    this.contactList = this.contactServices.getAll();
+
   }
 
   onPageLoaded(){
-    console.log("list contact loaded");
-    this.contactServices.refresh();
-
+      console.log("*****************************");
+    console.log("page loaded list contact");
+    this.contactList = this.contactServices.getAll();
   }
   onPageWillEnter() {
     /*to do just before the display of the page*/
@@ -32,20 +32,30 @@ export class ListContactPage {
     console.log("list contact will leave");
   }
   onPageDidLeave() {console.log("list contact did leave");}
-  onPageWillUnload() {console.log("list contact will unload");}
+  onPageWillUnload() {
+    console.log("list contact will unload");
+    console.log("*****************************");
+  }
   onPageDidUnload() {console.log("list contact did unload");}
 
   editContact(contact: Contact) {
     console.log("about to edit contact:"+contact.firstName);
     /*let modal = Modal.create(EditContactPage, contact);
     this.nav.present(modal);*/
-    this.nav.setRoot(EditContactPage, {
+
+    let editContactModal = Modal.create(EditContactPage, {
       contact: contact
     });
+    this.nav.present(editContactModal);
+    /*this.app.getComponent("nav").push(EditContactPage, {
+      contact: contact
+    });*/
   }
 
   showNewContactPage() {
-    //let nav = this.app.getComponent("nav");
-    this.nav.push(NewContactPage);
+    /*let nav = this.app.getComponent("nav");
+    nav.setRoot(NewContactPage);*/
+    let newContactModal = Modal.create(NewContactPage);
+    this.nav.present(newContactModal);
   }
 }

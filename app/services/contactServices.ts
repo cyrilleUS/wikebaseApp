@@ -31,7 +31,6 @@ export class ContactServices {
     }
     //initiate contactList
     init() {
-      console.log("contactService.init");
       let loggerMethod: string = ".init";
       let restMessage: RestMessage;
       //call http post, response is already parsed to json
@@ -129,7 +128,6 @@ export class ContactServices {
         body += "&sessionToken=" + sessionToken;
       }
       body += this.toXformString(contact);
-      console.log("before request, body="+body);
       let headers = new Headers({
         'Content-Type': 'application/x-www-form-urlencoded'
       });
@@ -144,15 +142,7 @@ export class ContactServices {
     isInitiated(){
       return this.initiated;
     }
-    refresh(){
-      console.log("contactService.refesh");
-      this.initiated = false;
-    }
     getAll() {
-      console.log("contactService.getAll");
-      if ( !this.initiated ){
-        this.init();
-      }
       this.alphaAscSort();
       return this.contactList;
     }
@@ -183,7 +173,39 @@ export class ContactServices {
         }
       );
     }
-
+    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
+      let loggerMethod: string = ".editContact";
+      let restMessage: RestMessage;
+      this.callEditContact( contact ).subscribe(
+        //observable.next
+        data => {
+          restMessage = data;
+        },
+        //observable.error
+        error => {
+          console.error( this._loggerHeader + loggerMethod + "error subscribing restMessage" + error);
+          //errorCallback("internal error or connection aborted",nav);
+        },
+        //observable.complete
+        () => {
+        if(restMessage.status == "success") {
+            let updatedContact : Contact = restMessage.singleResult;
+            this.contactList[this.getContactIndexById(updatedContact.idContact)] = updatedContact;
+            successCallback(component);
+        }else if ( restMessage.status == "failure" ){
+          //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);
+          errorCallback( this.errorService.handleRestMessageError( restMessage.errors, loggerMethod), component );
+        }else{
+          let errorMessage = "restMessageStatus undefinied: bad request";
+          console.error( this._loggerHeader + loggerMethod + errorMessage);
+          //errorCallback("the server did not respond correctly",nav);
+        }
+      }
+      );
+    }
+//******************************************************************************
+//PRIVATE METHODS
+//******************************************************************************
 
     private toXformString(contact: Contact) {
       let output: string = "";
@@ -199,40 +221,7 @@ export class ContactServices {
       return output;
     }
 
-
-
-
-    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
-      let loggerMethod: string = ".editContact";
-      let localContactIndex = this.contactList.indexOf(contact);
-      let restMessage: RestMessage;
-      this.callEditContact( contact ).subscribe(
-        //observable.next
-        data => {
-          restMessage = data;
-        },
-        //observable.error
-        error => {
-          console.error( this._loggerHeader + loggerMethod + "error subscribing restMessage" + error);
-          //errorCallback("internal error or connection aborted",nav);
-        },
-        //observable.complete
-        () => {
-        if(restMessage.status == "success") {
-            this.contactList[localContactIndex] = restMessage.singleResult;
-            successCallback(component);
-        }else if ( restMessage.status == "failure" ){
-          //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);
-          errorCallback( this.errorService.handleRestMessageError( restMessage.errors, loggerMethod), component );
-        }else{
-          let errorMessage = "restMessageStatus undefinied: bad request";
-          console.error( this._loggerHeader + loggerMethod + errorMessage);
-          //errorCallback("the server did not respond correctly",nav);
-        }
-      }
-      );
-    }
-    setUpEmptyContactList(){
+    private setUpEmptyContactList(){
       let contactList: Array<Contact>;
       let emptyContact: Contact = {"idContact": "","firstName": "","lastName": "","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": ""};
       contactList = [emptyContact];
@@ -246,5 +235,17 @@ export class ContactServices {
             if (conact1.lastName > contact2.lastName) return 1;
           return 0;
         });
+    }
+
+    private getContactIndexById(idContact:string){
+      let index=-1;
+      let i:number;
+      for (i =0; i < this.contactList.length; i++){
+        if (this.contactList[i].idContact == idContact){
+          index = i;
+          break;
+        }
+      }
+      return index;
     }
 }

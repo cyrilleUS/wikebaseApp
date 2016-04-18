@@ -16,7 +16,7 @@ export class EditContactPage {
   email: AbstractControl;
   contact: Contact;
 
-  constructor( private app: IonicApp, private nav: NavController, private navParams: NavParams, private viewCtrl: ViewController, private formBuilder: FormBuilder, private contactServices: ContactServices ) {
+  constructor( private app: IonicApp, private nav: NavController, private navParams: NavParams, private viewController: ViewController, private formBuilder: FormBuilder, private contactServices: ContactServices ) {
 
     this.contact = navParams.get('contact');
     console.log("in edit-contact constructor, contact:"+this.contact.firstName);
@@ -72,8 +72,7 @@ export class EditContactPage {
         buttons: [
                 { text:'Ok',
                   handler: () => {
-                    nav.push(ListContactPage);
-                    //this.nav.push(LeadInfoPage, {company: company});
+                    nav.setRoot(ListContactPage);
                   }
               }]
       });
@@ -133,8 +132,7 @@ export class EditContactPage {
   }
 
   cancel() {
-    this.nav.setRoot(ListContactPage);
-
+    this.viewController.dismiss();
   }
   delete(){
     let alert = Alert.create(

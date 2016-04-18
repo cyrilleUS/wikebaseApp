@@ -1,6 +1,9 @@
+
 import {IonicApp, NavController, ViewController, Alert, Page} from 'ionic-angular';
-import {ContactServices} from '../../services/contactServices';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
+
+import {ContactServices} from '../../services/contactServices';
+
 import {HomePage} from '../home/home';
 import {Contact} from '../../models/contact';
 
@@ -12,6 +15,7 @@ export class NewContactPage {
   firstName: AbstractControl;
   lastName: AbstractControl;
   email: AbstractControl;
+
 
   constructor( private app: IonicApp, private nav: NavController, private viewController: ViewController, private contactServices: ContactServices, private formBuilder: FormBuilder ) {
 
@@ -111,11 +115,11 @@ export class NewContactPage {
   }
 
   cancel() {
-    if ( this.nav.canGoBack() ){
-        this.nav.pop();
-    }else{
-        this.nav.push(HomePage);
+    if(this.viewController.viewType) {
+      this.viewController.dismiss();
     }
-
+    else {
+      this.nav.setRoot(HomePage);
+    }
   }
 }
