@@ -27,10 +27,20 @@
       <ion-label id="emailLabel" for="email">email</ion-label>
       <ion-input id="email" [ngFormControl]="email" type="email"></ion-input>
     </ion-item>
-    <div *ngIf="email.hasError('required') && email.touched"
-        class="error-box">* email is required</div>
-    <div *ngIf="email.hasError('emailValidForm') && email.touched"
-        class="error-box">* You need a valid email address!</div>
+    <div *ngIf="email.hasError('required') && email.touched" class="error-box">
+      * email is required
+    </div>
+    <div *ngIf="email.hasError('emailValidForm') && email.touched" class="error-box">
+      * You need a valid email address!
+    </div>
+    <ion-item class="formInput">
+      <ion-label id="mobileNumberLabel" for="mobileNumber">mobile</ion-label>
+      <ion-input id="mobileNumber" ngControl="mobileNumber" type="text"></ion-input>
+    </ion-item>
+    <ion-item class="formInput">
+      <ion-label id="phoneNumberLabel" for="phoneNumber">Phone Number</ion-label>
+      <ion-input id="phoneNumber" ngControl="phoneNumber" type="text"></ion-input>
+    </ion-item>
     <ion-item class="formInput">
       <ion-label id="addressStreetLabel" for="addressStreet">Address street</ion-label>
       <ion-input id="addressStreet" ngControl="addressStreet" type="text"></ion-input>

@@ -14,7 +14,7 @@ let favorites = [],
     addContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/addContact",
     editContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/editContact",
     deleteContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/deleteContact"
-    
+
 @Injectable()
 export class ContactServices {
     http: Http;
@@ -268,12 +268,14 @@ export class ContactServices {
       if(contact.addressState) { output += "&addressState="+contact.addressState; }
       if(contact.addressCode) { output += "&addressCode="+contact.addressCode; }
       if(contact.addressCountry) { output += "&addressCountry="+contact.addressCountry; }
+      if(contact.mobileNumber) { output += "&mobileNumber="+contact.mobileNumber; }
+      if(contact.phoneNumber) { output += "&phoneNumber="+contact.phoneNumber; }
       return output;
     }
 
     private setUpEmptyContactList(){
       let contactList: Array<Contact>;
-      let emptyContact: Contact = {"idContact": "","firstName": "","lastName": "","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": ""};
+      let emptyContact: Contact = {"idContact": "","firstName": "","lastName": "","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": "", "mobileNumber": "", "phoneNumber": ""};
       contactList = [emptyContact];
     return contactList;
     }

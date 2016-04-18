@@ -28,7 +28,9 @@ export class EditContactPage {
       addressCity:[this.contact.addressCity],
       addressState:[this.contact.addressState],
       addressCode:[this.contact.addressCode],
-      addressCountry:[this.contact.addressCountry]
+      addressCountry:[this.contact.addressCountry],
+      mobileNumber:[this.contact.mobileNumber],
+      phoneNumber:[this.contact.phoneNumber]
     });
     this.firstName = this.contactForm.controls['firstName'];
     this.lastName = this.contactForm.controls['lastName'];
@@ -90,6 +92,7 @@ export class EditContactPage {
               }]
       });
     nav.present(alert);
+
   }
   errorPopup(messageToDisplay: Observable<string>, nav: any){
     let message: string;
@@ -135,7 +138,9 @@ export class EditContactPage {
         "addressCity": this.contactForm.value.addressCity,
         "addressState": this.contactForm.value.addressState,
         "addressCode": this.contactForm.value.addressCode,
-        "addressCountry": this.contactForm.value.addressCountry
+        "addressCountry": this.contactForm.value.addressCountry,
+        "mobileNumber": this.contactForm.value.mobileNumber,
+        "phoneNumber": this.contactForm.value.phoneNumber
       };
       let successCallback = this.successPopup;
       let errorCallback = this.errorPopup;
