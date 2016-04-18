@@ -12,8 +12,9 @@ import 'rxjs/Rx';
 let favorites = [],
     listContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/listContact",
     addContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/addContact",
-    editContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/editContact"
-
+    editContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/editContact",
+    deleteContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/deleteContact"
+    
 @Injectable()
 export class ContactServices {
     http: Http;
@@ -138,6 +139,24 @@ export class ContactServices {
           .map(res => res.json())
           .catch( this.errorService.handleCallError );
     }
+
+    callDeleteContact( contact: Contact ){
+      let body = "locale=fr_US";
+      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
+        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+        body += "&sessionToken=" + sessionToken;
+      }
+      body += this.toXformString(contact);
+      let headers = new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      });
+      let options = new RequestOptions({
+        headers: headers
+      });
+      return this.http.post( deleteContactURL, body, options )
+          .map(res => res.json())
+          .catch( this.errorService.handleCallError );
+    }
 //******************************************************************************
     isInitiated(){
       return this.initiated;
@@ -191,6 +210,37 @@ export class ContactServices {
         if(restMessage.status == "success") {
             let updatedContact : Contact = restMessage.singleResult;
             this.contactList[this.getContactIndexById(updatedContact.idContact)] = updatedContact;
+            successCallback(component);
+        }else if ( restMessage.status == "failure" ){
+          //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);
+          errorCallback( this.errorService.handleRestMessageError( restMessage.errors, loggerMethod), component );
+        }else{
+          let errorMessage = "restMessageStatus undefinied: bad request";
+          console.error( this._loggerHeader + loggerMethod + errorMessage);
+          //errorCallback("the server did not respond correctly",nav);
+        }
+      }
+      );
+    }
+    deleteContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ){
+      let loggerMethod: string = ".deleteContact";
+      let restMessage: RestMessage;
+      let idContactToDelete: string = contact.idContact;
+      this.callDeleteContact( contact ).subscribe(
+        //observable.next
+        data => {
+          restMessage = data;
+        },
+        //observable.error
+        error => {
+          console.error( this._loggerHeader + loggerMethod + "error subscribing restMessage" + error);
+          //errorCallback("internal error or connection aborted",nav);
+        },
+        //observable.complete
+        () => {
+        if(restMessage.status == "success") {
+            let updatedContact : Contact = restMessage.singleResult;
+            this.contactList.splice(this.getContactIndexById(idContactToDelete),1);
             successCallback(component);
         }else if ( restMessage.status == "failure" ){
           //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);

@@ -78,6 +78,19 @@ export class EditContactPage {
       });
     nav.present(alert);
   }
+  successDeletePopup(nav: any){
+    let alert = Alert.create({
+        title: 'Contact Deleted',
+        message: "Your contact has been deleted !",
+        buttons: [
+                { text:'Ok',
+                  handler: () => {
+                    nav.setRoot(ListContactPage);
+                  }
+              }]
+      });
+    nav.present(alert);
+  }
   errorPopup(messageToDisplay: Observable<string>, nav: any){
     let message: string;
     messageToDisplay.subscribe(
@@ -143,7 +156,10 @@ export class EditContactPage {
           {
             text:'Yes',
             handler: () => {
-              //do nothing on complete
+              let successCallback = this.successDeletePopup;
+              let errorCallback = this.errorPopup;
+              let callbackComponent = this.nav;
+              this.contactServices.deleteContact( this.contact, successCallback, errorCallback, callbackComponent);
             }
           },
           {
