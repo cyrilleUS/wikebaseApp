@@ -27,7 +27,9 @@ export class NewContactPage {
       addressCity:[''],
       addressState:[''],
       addressCode:[''],
-      addressCountry:['']
+      addressCountry:[''],
+      mobileNumber:[''],
+      phoneNumber:['']
     })
     this.firstName = this.contactForm.controls['firstName'];
     this.lastName = this.contactForm.controls['lastName'];
@@ -105,7 +107,9 @@ export class NewContactPage {
         "addressCity": this.contactForm.value.addressCity,
         "addressState": this.contactForm.value.addressState,
         "addressCode": this.contactForm.value.addressCode,
-        "addressCountry": this.contactForm.value.addressCountry
+        "addressCountry": this.contactForm.value.addressCountry,
+        "mobileNumber": this.contactForm.value.mobileNumber,
+        "phoneNumber": this.contactForm.value.phoneNumber
       };
       let successCallback = this.successPopup;
       let errorCallback = this.errorPopup;

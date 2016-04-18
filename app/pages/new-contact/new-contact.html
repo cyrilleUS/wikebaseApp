@@ -1,57 +1,71 @@
 <ion-navbar wikebasePaleBlue *navbar>
-  <button menuToggle>
-    <ion-icon name="menu"></ion-icon>
-  </button>
-  <ion-title>New Contact</ion-title>
+    <button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>New Contact</ion-title>
 </ion-navbar>
 
 <ion-content id="new-contactContent" padding>
-  <form [ngFormModel]="contactForm" (submit)="addNewContact($event)">
-    <ion-item class="formInput" [class.error]="!firstName.valid && firstName.touched">
-      <ion-label id="firstNameLabel" for="firstName">firstName</ion-label>
-      <ion-input id="firstName" [ngFormControl]="firstName" type="text"></ion-input>
-    </ion-item>
-    <div *ngIf="firstName.hasError('required') && firstName.touched"
-        class="error-box">* firstName is required</div>
-    <div *ngIf="firstName.hasError('minlength') && firstName.touched"
-        class="error-box">* Minimum firstName length is 3!</div>
-    <ion-item class="formInput" [class.error]="!lastName.valid && lastName.touched">
-      <ion-label id="lastNameLabel" for="lastName">lastName</ion-label>
-      <ion-input id="lastName" [ngFormControl]="lastName" type="text"></ion-input>
-    </ion-item>
-    <div *ngIf="lastName.hasError('required') && lastName.touched"
-        class="error-box">* lastName is required</div>
-    <div *ngIf="lastName.hasError('minlength') && lastName.touched"
-        class="error-box">* Minimum lastName length is 3!</div>
-    <ion-item class="formInput" [class.error]="!email.valid && email.touched">
-      <ion-label id="emailLabel" for="email">email</ion-label>
-      <ion-input id="email" [ngFormControl]="email" type="email"></ion-input>
-    </ion-item>
-    <div *ngIf="email.hasError('required') && email.touched"
-        class="error-box">* email is required</div>
-    <div *ngIf="email.hasError('emailValidForm') && email.touched"
-        class="error-box">* You need a valid email address!</div>
-    <ion-item class="formInput">
-      <ion-label id="addressStreetLabel" for="addressStreet">Address street</ion-label>
-      <ion-input id="addressStreet" ngControl="addressStreet" type="text"></ion-input>
-    </ion-item>
-    <ion-item class="formInput">
-      <ion-label id="addressCityLabel" for="addressCity">Address city</ion-label>
-      <ion-input id="addressCity" ngControl="addressCity" type="text"></ion-input>
-    </ion-item>
-    <ion-item class="formInput">
-      <ion-label id="addressStateLabel" for="addressState">Address state</ion-label>
-      <ion-input id="addressState" ngControl="addressState" type="text"></ion-input>
-    </ion-item>
-    <ion-item class="formInput">
-      <ion-label id="addressCodeLabel" for="addressCode">Address code</ion-label>
-      <ion-input id="addressCode" ngControl="addressCode" type="text"></ion-input>
-    </ion-item>
-    <ion-item class="formInput">
-      <ion-label id="addressCountryLabel" for="addressCountry">Address country</ion-label>
-      <ion-input id="addressCountry" ngControl="addressCountry" type="text"></ion-input>
-    </ion-item>
-    <button id="saveButton" block [disabled]="!contactForm.valid" type="submit">Save</button>
-  </form>
-  <button id="cancelButton" block (click)="cancel()">Cancel</button>
+    <form [ngFormModel]="contactForm" (submit)="addNewContact($event)">
+        <ion-item class="formInput" [class.error]="!firstName.valid && firstName.touched">
+            <ion-label id="firstNameLabel" for="firstName">firstName</ion-label>
+            <ion-input id="firstName" [ngFormControl]="firstName" type="text"></ion-input>
+        </ion-item>
+        <div *ngIf="firstName.hasError('required') && firstName.touched" class="error-box">
+            * firstName is required
+        </div>
+        <div *ngIf="firstName.hasError('minlength') && firstName.touched" class="error-box">
+            * Minimum firstName length is 3!
+        </div>
+        <ion-item class="formInput" [class.error]="!lastName.valid && lastName.touched">
+            <ion-label id="lastNameLabel" for="lastName">lastName</ion-label>
+            <ion-input id="lastName" [ngFormControl]="lastName" type="text"></ion-input>
+        </ion-item>
+        <div *ngIf="lastName.hasError('required') && lastName.touched" class="error-box">
+            * lastName is required
+        </div>
+        <div *ngIf="lastName.hasError('minlength') && lastName.touched" class="error-box">
+            * Minimum lastName length is 3!
+        </div>
+        <ion-item class="formInput" [class.error]="!email.valid && email.touched">
+            <ion-label id="emailLabel" for="email">email</ion-label>
+            <ion-input id="email" [ngFormControl]="email" type="email"></ion-input>
+        </ion-item>
+        <div *ngIf="email.hasError('required') && email.touched" class="error-box">
+            * email is required
+        </div>
+        <div *ngIf="email.hasError('emailValidForm') && email.touched" class="error-box">
+            * You need a valid email address!
+        </div>
+        <ion-item class="formInput">
+            <ion-label id="mobileNumberLabel" for="mobileNumber">Mobile</ion-label>
+            <ion-input id="mobileNumber" ngControl="mobileNumber" type="text"></ion-input>
+        </ion-item>
+        <ion-item class="formInput">
+            <ion-label id="phoneNumberLabel" for="phoneNumber">Phone Number</ion-label>
+            <ion-input id="phoneNumber" ngControl="phoneNumber" type="text"></ion-input>
+        </ion-item>
+        <ion-item class="formInput">
+            <ion-label id="addressStreetLabel" for="addressStreet">Address street</ion-label>
+            <ion-input id="addressStreet" ngControl="addressStreet" type="text"></ion-input>
+        </ion-item>
+        <ion-item class="formInput">
+            <ion-label id="addressCityLabel" for="addressCity">Address city</ion-label>
+            <ion-input id="addressCity" ngControl="addressCity" type="text"></ion-input>
+        </ion-item>
+        <ion-item class="formInput">
+            <ion-label id="addressStateLabel" for="addressState">Address state</ion-label>
+            <ion-input id="addressState" ngControl="addressState" type="text"></ion-input>
+        </ion-item>
+        <ion-item class="formInput">
+            <ion-label id="addressCodeLabel" for="addressCode">Address code</ion-label>
+            <ion-input id="addressCode" ngControl="addressCode" type="text"></ion-input>
+        </ion-item>
+        <ion-item class="formInput">
+            <ion-label id="addressCountryLabel" for="addressCountry">Address country</ion-label>
+            <ion-input id="addressCountry" ngControl="addressCountry" type="text"></ion-input>
+        </ion-item>
+        <button id="saveButton" block [disabled]="!contactForm.valid" type="submit">Save</button>
+    </form>
+    <button id="cancelButton" block (click)="cancel()">Cancel</button>
 </ion-content>

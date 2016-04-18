@@ -29,7 +29,9 @@ export class EditContactPage {
       addressCity:[this.contact.addressCity],
       addressState:[this.contact.addressState],
       addressCode:[this.contact.addressCode],
-      addressCountry:[this.contact.addressCountry]
+      addressCountry:[this.contact.addressCountry],
+      mobileNumber:[this.contact.mobileNumber],
+      phoneNumber:[this.contact.phoneNumber]
     });
     this.firstName = this.contactForm.controls['firstName'];
     this.lastName = this.contactForm.controls['lastName'];
@@ -83,6 +85,21 @@ export class EditContactPage {
     //nav.present(loading);
   }
 
+  successDeletePopup(nav: any){
+    let alert = Alert.create({
+        title: 'Contact Deleted',
+        message: "Your contact has been deleted !",
+        buttons: [
+                { text:'Ok',
+                  handler: () => {
+                    nav.setRoot(ListContactPage);
+                  }
+              }]
+      });
+    nav.present(alert);
+
+  }
+
   errorPopup(messageToDisplay: Observable<string>, nav: any){
     let message: string;
     messageToDisplay.subscribe(
@@ -127,7 +144,9 @@ export class EditContactPage {
         "addressCity": this.contactForm.value.addressCity,
         "addressState": this.contactForm.value.addressState,
         "addressCode": this.contactForm.value.addressCode,
-        "addressCountry": this.contactForm.value.addressCountry
+        "addressCountry": this.contactForm.value.addressCountry,
+        "mobileNumber": this.contactForm.value.mobileNumber,
+        "phoneNumber": this.contactForm.value.phoneNumber
       };
       let successCallback = this.successPopup;
       let errorCallback = this.errorPopup;
@@ -149,8 +168,10 @@ export class EditContactPage {
           {
             text:'Yes',
             handler: () => {
-              /*this.contactServices.deleteContact(this.contact);
-              this.viewCtrl.dismiss();*/
+              let successCallback = this.successDeletePopup;
+              let errorCallback = this.errorPopup;
+              let callbackComponent = this.nav;
+              this.contactServices.deleteContact( this.contact, successCallback, errorCallback, callbackComponent);
             }
           },
           {
