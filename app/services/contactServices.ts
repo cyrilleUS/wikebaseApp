@@ -21,6 +21,7 @@ export class ContactServices {
     userServices: UserServices;
     contactList: Array<Contact>;
     initErrorMessage: string;
+    initiated: boolean = false;
     private _loggerHeader: string = "error in contactServices";
 
     constructor (http: Http, userServices: UserServices, errorService: ErrorService) {
@@ -41,6 +42,7 @@ export class ContactServices {
               this.contactList = restMessage.multipleResults;
               this.initErrorMessage = "";
               this.alphaAscSort();
+              this.initiated = true;
           }else if ( restMessage.status == "failure" ){
             let errorMessage: string;
             this.errorService.handleRestMessageError(restMessage.errors, this._loggerHeader + loggerMethod).subscribe(
@@ -49,6 +51,7 @@ export class ContactServices {
               () => {
                 this.contactList = this.setUpEmptyContactList();
                 this.initErrorMessage = errorMessage;
+                this.initiated = false;
               }
             );
           }else{
@@ -59,6 +62,7 @@ export class ContactServices {
               () => {
                 this.contactList = this.setUpEmptyContactList();
                 this.initErrorMessage = errorMessage;
+                this.initiated = false;
               }
             );
           }
@@ -71,6 +75,7 @@ export class ContactServices {
             () => {
               this.contactList = this.setUpEmptyContactList();
               this.initErrorMessage = errorMessage;
+              this.initiated = false;
             }
           );
         }
@@ -123,7 +128,6 @@ export class ContactServices {
         body += "&sessionToken=" + sessionToken;
       }
       body += this.toXformString(contact);
-      console.log("before request, body="+body);
       let headers = new Headers({
         'Content-Type': 'application/x-www-form-urlencoded'
       });
@@ -135,6 +139,9 @@ export class ContactServices {
           .catch( this.errorService.handleCallError );
     }
 //******************************************************************************
+    isInitiated(){
+      return this.initiated;
+    }
     getAll() {
       this.alphaAscSort();
       return this.contactList;
@@ -166,28 +173,8 @@ export class ContactServices {
         }
       );
     }
-
-
-    private toXformString(contact: Contact) {
-      let output: string = "";
-      if(contact.idContact) { output += "&idContact="+contact.idContact; }
-      if(contact.firstName) { output += "&firstName="+contact.firstName; }
-      if(contact.lastName) { output += "&lastName="+contact.lastName; }
-      if(contact.email) { output += "&email="+contact.email; }
-      if(contact.addressStreet) { output += "&addressStreet="+contact.addressStreet; }
-      if(contact.addressCity) { output += "&addressCity="+contact.addressCity; }
-      if(contact.addressState) { output += "&addressState="+contact.addressState; }
-      if(contact.addressCode) { output += "&addressCode="+contact.addressCode; }
-      if(contact.addressCountry) { output += "&addressCountry="+contact.addressCountry; }
-      return output;
-    }
-
-
-
-
-    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
+    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, successComponent:any, errorComponent ) {
       let loggerMethod: string = ".editContact";
-      let localContactIndex = this.contactList.indexOf(contact);
       let restMessage: RestMessage;
       this.callEditContact( contact ).subscribe(
         //observable.next
@@ -202,11 +189,12 @@ export class ContactServices {
         //observable.complete
         () => {
         if(restMessage.status == "success") {
-            this.contactList[localContactIndex] = restMessage.singleResult;
-            successCallback(component);
+            let updatedContact : Contact = restMessage.singleResult;
+            this.contactList[this.getContactIndexById(updatedContact.idContact)] = updatedContact;
+            successCallback(successComponent);
         }else if ( restMessage.status == "failure" ){
           //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);
-          errorCallback( this.errorService.handleRestMessageError( restMessage.errors, loggerMethod), component );
+          errorCallback( this.errorService.handleRestMessageError( restMessage.errors, loggerMethod), errorComponent );
         }else{
           let errorMessage = "restMessageStatus undefinied: bad request";
           console.error( this._loggerHeader + loggerMethod + errorMessage);
@@ -214,21 +202,6 @@ export class ContactServices {
         }
       }
       );
-    }
-    setUpEmptyContactList(){
-      let contactList: Array<Contact>;
-      let emptyContact: Contact = {"idContact": "","firstName": "","lastName": "","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": ""};
-      contactList = [emptyContact];
-    return contactList;
-    }
-
-    private alphaAscSort(){
-        this.contactList.sort(
-          (conact1, contact2) => {
-            if (conact1.lastName.toLowerCase() < contact2.lastName.toLowerCase()) return -1;
-            if (conact1.lastName.toLowerCase() > contact2.lastName.toLowerCase()) return 1;
-          return 0;
-        });
     }
 
     sortContactByName() {
@@ -244,5 +217,51 @@ export class ContactServices {
         return 0;
       });
       return this.contactList;
+    }
+
+//******************************************************************************
+//PRIVATE METHODS
+//******************************************************************************
+
+    private toXformString(contact: Contact) {
+      let output: string = "";
+      if(contact.idContact) { output += "&idContact="+contact.idContact; }
+      if(contact.firstName) { output += "&firstName="+contact.firstName; }
+      if(contact.lastName) { output += "&lastName="+contact.lastName; }
+      if(contact.email) { output += "&email="+contact.email; }
+      if(contact.addressStreet) { output += "&addressStreet="+contact.addressStreet; }
+      if(contact.addressCity) { output += "&addressCity="+contact.addressCity; }
+      if(contact.addressState) { output += "&addressState="+contact.addressState; }
+      if(contact.addressCode) { output += "&addressCode="+contact.addressCode; }
+      if(contact.addressCountry) { output += "&addressCountry="+contact.addressCountry; }
+      return output;
+    }
+
+    private setUpEmptyContactList(){
+      let contactList: Array<Contact>;
+      let emptyContact: Contact = {"idContact": "","firstName": "","lastName": "","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": ""};
+      contactList = [emptyContact];
+    return contactList;
+    }
+
+    private alphaAscSort(){
+        this.contactList.sort(
+          (conact1, contact2) => {
+            if (conact1.lastName.toLowerCase() < contact2.lastName.toLowerCase()) return -1;
+            if (conact1.lastName.toLowerCase() > contact2.lastName.toLowerCase()) return 1;
+          return 0;
+        });
+    }
+
+    private getContactIndexById(idContact:string){
+      let index=-1;
+      let i:number;
+      for (i =0; i < this.contactList.length; i++){
+        if (this.contactList[i].idContact == idContact){
+          index = i;
+          break;
+        }
+      }
+      return index;
     }
 }

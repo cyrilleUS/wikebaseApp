@@ -1,4 +1,4 @@
-import {Page, IonicApp} from 'ionic-angular';
+import {Page, IonicApp, MenuController, NavController} from 'ionic-angular';
 import {UserServices} from '../../services/userServices';
 import {ContactServices} from '../../services/contactServices';
 import {AuthentificationPage} from '../authentification/authentification';
@@ -8,14 +8,17 @@ import {AuthentificationPage} from '../authentification/authentification';
 
 export class HomePage {
   ownerName: string;
-  userServices: UserServices;
-  constructor(userServices: UserServices, contactServices: ContactServices, private app: IonicApp) {
-    contactServices.init();
-    this.userServices = userServices;
+
+  constructor(private app: IonicApp, private nav: NavController, private menuController: MenuController, private userServices: UserServices, private contactServices: ContactServices ) {
+
   }
 
   onPageLoaded(){
+    this.menuController.enable(true);
     this.ownerName = this.userServices.loggedUser.firstName + " " + this.userServices.loggedUser.lastName;
+    if ( !this.contactServices.isInitiated() ){
+        this.contactServices.init();
+    }
   }
   onPageWillEnter() {
     /*to do just before the display of the page*/
@@ -30,6 +33,6 @@ export class HomePage {
 
   disconnect() {
     this.userServices.deleteLoggedUser();
-    this.app.getComponent("nav").setRoot(AuthentificationPage);
+    this.nav.setRoot(AuthentificationPage);
   }
 }

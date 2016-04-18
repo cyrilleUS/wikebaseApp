@@ -8,17 +8,16 @@ import {EditContactPage} from '../edit-contact/edit-contact';
   templateUrl: 'build/pages/list-contact/list-contact.html',
 })
 export class ListContactPage {
-  contactServices: ContactServices;
   contactList: Array<Contact>;
 s
 
-  constructor(contactServices: ContactServices, private app: IonicApp, public nav: NavController) {
-    this.contactServices = contactServices;
-    this.nav = nav;
+  constructor( private app: IonicApp, private nav: NavController, private viewController: ViewController, private contactServices: ContactServices ) {
+
   }
 
   onPageLoaded(){
-    console.log("list contact loaded");
+      console.log("*****************************");
+    console.log("page loaded list contact");
     this.contactList = this.contactServices.getAll();
   }
   onPageWillEnter() {
@@ -33,17 +32,21 @@ s
     console.log("list contact will leave");
   }
   onPageDidLeave() {console.log("list contact did leave");}
-  onPageWillUnload() {console.log("list contact will unload");}
+  onPageWillUnload() {
+    console.log("list contact will unload");
+    console.log("*****************************");
+  }
   onPageDidUnload() {console.log("list contact did unload");}
 
   editContact(contact: Contact) {
     console.log("about to edit contact:"+contact.firstName);
     /*let modal = Modal.create(EditContactPage, contact);
     this.nav.present(modal);*/
+
     let editContactModal = Modal.create(EditContactPage, {
       contact: contact
     });
-    this.app.getComponent("nav").present(editContactModal);
+    this.nav.present(editContactModal);
     /*this.app.getComponent("nav").push(EditContactPage, {
       contact: contact
     });*/
@@ -53,7 +56,7 @@ s
     /*let nav = this.app.getComponent("nav");
     nav.setRoot(NewContactPage);*/
     let newContactModal = Modal.create(NewContactPage);
-    this.app.getComponent("nav").present(newContactModal);
+    this.nav.present(newContactModal);
   }
 
   sortContactAlert() {

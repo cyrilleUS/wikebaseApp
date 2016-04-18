@@ -1,24 +1,30 @@
 <ion-navbar wikebasePaleBlue *navbar>
-  <ion-title>Login</ion-title>
+    <ion-title>Login</ion-title>
 </ion-navbar>
 
 <ion-content id="authentificationContent" padding>
-  <p id="loginTitle">Wikebase</p>
-  <form [ngFormModel]="loginForm" (submit)="login($event)">
-    <ion-item [class.error]="!email.valid && email.touched">
-      <ion-label id="emailLabel" for="email">Email</ion-label>
-      <ion-input id="email" [ngFormControl]="email" type="email"></ion-input>
-    </ion-item>
-    <div *ngIf="email.hasError('required') && email.touched"
-        class="error-box">* email is required</div>
-    <div *ngIf="email.hasError('emailValidForm') && email.touched"
-        class="error-box">* You need a valid email address!</div>
-    <ion-item [class.error]="!password.valid && password.touched">
-      <ion-label id="passwordLabel" for="password">Password</ion-label>
-      <ion-input id="password" [ngFormControl]="password" type="password"></ion-input>
-    </ion-item>
-    <div *ngIf="password.hasError('required') && password.touched"
-        class="error-box">* password is required</div>
-    <button block [disabled]="!loginForm.valid" type="submit">Login</button>
-  </form>
+    <p id="loginTitle">Wikebase</p>
+    <form [ngFormModel]="loginForm" (submit)="login($event)">
+        <ion-item [class.error]="!email.valid && email.touched">
+            <ion-label id="emailLabel" for="email">Email</ion-label>
+            <ion-input id="email" [ngFormControl]="email" type="email"></ion-input>
+        </ion-item>
+        <div *ngIf="email.hasError('required') && email.touched" class="error-box">
+            * email is required
+        </div>
+        <div *ngIf="email.hasError('emailValidForm') && email.touched" class="error-box">
+            * You need a valid email address!
+        </div>
+        <ion-item [class.error]="!password.valid && password.touched">
+            <ion-label id="passwordLabel" for="password">Password</ion-label>
+            <ion-input id="password" [ngFormControl]="password" type="password"></ion-input>
+        </ion-item>
+        <div *ngIf="password.hasError('required') && password.touched" class="error-box">
+          * password is required
+        </div>
+        <div *ngIf="password.hasError('minlength') && password.touched" class="error-box">
+          * Minimum password length is 6
+        </div>
+        <button block [disabled]="!loginForm.valid" type="submit">Login</button>
+    </form>
 </ion-content>
