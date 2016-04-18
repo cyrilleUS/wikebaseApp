@@ -1,4 +1,5 @@
-import {IonicApp, Modal, Platform, NavController, NavParams, Page, ViewController} from 'ionic-angular';
+import {IonicApp, Modal, Platform, NavController, NavParams, ViewController, Alert, Page} from 'ionic-angular';
+import {Observable} from 'rxjs/Observable';
 import {ContactServices} from '../../services/contactServices';
 import {Contact} from '../../models/Contact';
 import {NewContactPage} from '../new-contact/new-contact';
@@ -51,11 +52,74 @@ export class ListContactPage {
       contact: contact
     });*/
   }
-
+  deleteContact(contact: Contact){
+    let alert = Alert.create(
+      {
+        title: "Delete Contact",
+        message: "Sure?",
+        buttons: [
+          {
+            text:"Yes",
+            handler: () => {
+              let successCallback = this.successDeletePopup;
+              let errorCallback = this.errorPopup;
+              let callbackComponent = this.nav;
+              this.contactServices.deleteContact( contact, successCallback, errorCallback, callbackComponent);
+            }
+          },
+          {
+            text: "No",
+            handler: () => {
+              //do nothing on complete
+            }
+          }
+        ]
+      });
+      this.nav.present(alert);
+    }
   showNewContactPage() {
     /*let nav = this.app.getComponent("nav");
     nav.setRoot(NewContactPage);*/
     let newContactModal = Modal.create(NewContactPage);
     this.nav.present(newContactModal);
+  }
+  successDeletePopup(nav: any){
+    let alert = Alert.create({
+        title: 'Contact Deleted',
+        message: "Your contact has been deleted !",
+        buttons: [
+                { text:'Ok',
+                  handler: () => {
+                    nav.setRoot(ListContactPage);
+                  }
+              }]
+      });
+    nav.present(alert);
+  }
+  errorPopup(messageToDisplay: Observable<string>, nav: any){
+    let message: string;
+    messageToDisplay.subscribe(
+      //
+      data => {
+        message = data;
+      }, error => {
+        //todo
+      }, () => {
+        let alert = Alert.create(
+          {
+            title: 'Editing Contact Failed',
+            message: ''+ message,
+            buttons: [
+              {
+                text:'Ok',
+                handler: () => {
+                  //do nothing on complete
+                }
+              }
+            ]
+          });
+          nav.present(alert);
+        }
+      );
   }
 }
