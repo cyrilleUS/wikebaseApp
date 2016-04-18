@@ -225,9 +225,24 @@ export class ContactServices {
     private alphaAscSort(){
         this.contactList.sort(
           (conact1, contact2) => {
-            if (conact1.lastName < contact2.lastName) return -1;
-            if (conact1.lastName > contact2.lastName) return 1;
+            if (conact1.lastName.toLowerCase() < contact2.lastName.toLowerCase()) return -1;
+            if (conact1.lastName.toLowerCase() > contact2.lastName.toLowerCase()) return 1;
           return 0;
         });
+    }
+
+    sortContactByName() {
+      this.alphaAscSort();
+      return this.contactList;
+    }
+
+    sortContactByDate() {
+      this.contactList.sort(
+        (contact1, contact2) => {
+          if (contact1.idContact < contact2.idContact) return -1;
+          if (contact1.idContact > contact2.idContact) return 1;
+        return 0;
+      });
+      return this.contactList;
     }
 }

@@ -1,4 +1,4 @@
-import {IonicApp, Modal, Platform, NavController, NavParams, Page, ViewController} from 'ionic-angular';
+import {IonicApp, Modal, Platform, NavController, NavParams, Page, ViewController, Alert} from 'ionic-angular';
 import {ContactServices} from '../../services/contactServices';
 import {Contact} from '../../models/Contact';
 import {NewContactPage} from '../new-contact/new-contact';
@@ -10,7 +10,7 @@ import {EditContactPage} from '../edit-contact/edit-contact';
 export class ListContactPage {
   contactServices: ContactServices;
   contactList: Array<Contact>;
-
+s
 
   constructor(contactServices: ContactServices, private app: IonicApp, public nav: NavController) {
     this.contactServices = contactServices;
@@ -54,5 +54,34 @@ export class ListContactPage {
     nav.setRoot(NewContactPage);*/
     let newContactModal = Modal.create(NewContactPage);
     this.app.getComponent("nav").present(newContactModal);
+  }
+
+  sortContactAlert() {
+    let alert = Alert.create({
+      title: "Sort Contact",
+      message: "How do you want to sort your contact?",
+      buttons: [
+        { text:"By name",
+          handler: () => {
+            this.sortContact("name");
+          }
+        },{
+          text:"By date of creation",
+          handler: () => {
+            this.sortContact("date");
+          }
+        }
+      ]
+    });
+    this.nav.present(alert);
+  }
+
+  sortContact(sortParameter: string) {
+    if(sortParameter == "name") {
+      this.contactList = this.contactServices.sortContactByName();
+    }
+    else if (sortParameter == "date") {
+      this.contactList = this.contactServices.sortContactByDate();
+    }
   }
 }

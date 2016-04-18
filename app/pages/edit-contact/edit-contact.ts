@@ -74,13 +74,13 @@ export class EditContactPage {
         buttons: [
                 { text:'Ok',
                   handler: () => {
-                    nav.push(ListContactPage);
-                    //this.nav.push(LeadInfoPage, {company: company});
+                    nav.setRoot(ListContactPage);
                   }
               }]
       });
     nav.present(alert);
   }
+
   errorPopup(messageToDisplay: Observable<string>, nav: any){
     let message: string;
     messageToDisplay.subscribe(
@@ -140,7 +140,7 @@ export class EditContactPage {
     this.viewCtrl.dismiss();
 
   }
-  delete(){
+  public delete(){
     let alert = Alert.create(
       {
         title: 'Delete Contact',
@@ -149,7 +149,8 @@ export class EditContactPage {
           {
             text:'Yes',
             handler: () => {
-              //do nothing on complete
+              /*this.contactServices.deleteContact(this.contact);
+              this.viewCtrl.dismiss();*/
             }
           },
           {
