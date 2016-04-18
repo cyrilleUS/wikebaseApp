@@ -15,10 +15,9 @@ export class AuthentificationPage {
   password: AbstractControl;
   menu: MenuController
 
-  constructor(private app: IonicApp, userServices: UserServices, form: FormBuilder, menu: MenuController) {
+  constructor( private app: IonicApp, userServices: UserServices, form: FormBuilder, menu: MenuController ) {
     this.menu = menu;
     this.menu.enable(false);
-
     this.userServices = userServices;
 
     this.loginForm = form.group ({
@@ -30,19 +29,18 @@ export class AuthentificationPage {
     this.password = this.loginForm.controls['password'];
   }
 
-  emailValidForm(c: Control) {
+  emailValidForm( control: Control ) {
     var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
 
-        if (c.value != "" && (c.value.length <= 5 || !EMAIL_REGEXP.test(c.value))) {
+        if (control.value != "" && (control.value.length <= 5 || !EMAIL_REGEXP.test(control.value))) {
             return { "emailValidForm": true };
         }
-
         return null;
   }
 
-  login(event) {
-    if(!this.loginForm.valid) {
-      console.error("form not valid");
+  login( event ) {
+    if( !this.loginForm.valid ) {
+      console.error( "form not valid" );
     }
     else {
       let user: User = {
@@ -67,7 +65,10 @@ export class AuthentificationPage {
         buttons: [
           { text:"ok",
             handler: () => {
-              nav.setPages([{page: HomePage }]);
+              nav.setPages([
+                {page: HomePage}
+                ]);
+
             }
           }
         ]

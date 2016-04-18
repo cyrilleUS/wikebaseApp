@@ -1,7 +1,6 @@
-import {Page} from 'ionic-angular';
+import {IonicApp, Modal, Platform, NavController, NavParams, Page, ViewController} from 'ionic-angular';
 import {ContactServices} from '../../services/contactServices';
 import {Contact} from '../../models/Contact';
-import {IonicApp} from 'ionic-angular';
 import {NewContactPage} from '../new-contact/new-contact';
 import {EditContactPage} from '../edit-contact/edit-contact';
 
@@ -10,28 +9,37 @@ import {EditContactPage} from '../edit-contact/edit-contact';
 })
 export class ListContactPage {
   contactServices: ContactServices;
-  contactList;
+  contactList: Array<Contact>;
 
-  constructor(contactServices: ContactServices, private app: IonicApp) {
+
+  constructor(contactServices: ContactServices, private app: IonicApp, public nav: NavController) {
     this.contactServices = contactServices;
+    this.nav = nav;
   }
 
   onPageLoaded(){
-
+    console.log("list contact loaded");
+    this.contactList = this.contactServices.getAll();
   }
   onPageWillEnter() {
     /*to do just before the display of the page*/
-    this.contactList = this.contactServices.getAll();
+    console.log("will enter list contact");
+
   }
-  onPageDidEnter(){}
+  onPageDidEnter(){
+    console.log("list contact did enter");
+  }
   onPageWillLeave() {
-    /*to do just before the page is leaved*/
+    console.log("list contact will leave");
   }
-  onPageDidLeave() {}
-  onPageWillUnload() {}
-  onPageDidUnload() {}
+  onPageDidLeave() {console.log("list contact did leave");}
+  onPageWillUnload() {console.log("list contact will unload");}
+  onPageDidUnload() {console.log("list contact did unload");}
 
   editContact(contact: Contact) {
+    console.log("about to edit contact:"+contact.firstName);
+    /*let modal = Modal.create(EditContactPage, contact);
+    this.nav.present(modal);*/
     this.app.getComponent("nav").setRoot(EditContactPage, {
       contact: contact
     });

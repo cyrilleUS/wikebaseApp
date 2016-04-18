@@ -1,7 +1,8 @@
-import {Page, IonicApp, Alert, NavParams} from 'ionic-angular';
+import {IonicApp, Modal, Platform, NavController, NavParams, Page, ViewController, Alert} from 'ionic-angular';
 import {ContactServices} from '../../services/contactServices';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 import {HomePage} from '../home/home';
+import {ListContactPage} from '../list-contact/list-contact';
 import {Contact} from '../../models/contact';
 import {Observable} from 'rxjs/Observable';
 
@@ -14,31 +15,33 @@ export class EditContactPage {
   firstName: AbstractControl;
   lastName: AbstractControl;
   email: AbstractControl;
-  editedContact: Contact;
+  //editedContact: Contact;
+  contact: Contact;
 
-  constructor(contactServices: ContactServices, form: FormBuilder,  private app: IonicApp, navParams: NavParams) {
+  constructor(contactServices: ContactServices, form: FormBuilder,  private app: IonicApp, public platform: Platform, navParams: NavParams, public viewCtrl: ViewController) {
     this.contactServices = contactServices;
-    this.editedContact = navParams.get('contact');
-
+    this.contact = navParams.get('contact');
+    console.log("in edit-contact constructor, contact:"+this.contact.firstName);
     this.contactForm = form.group ({
-      firstName: [this.editedContact.firstName, Validators.compose([Validators.required, Validators.minLength(3)])],
-      lastName: [this.editedContact.lastName, Validators.compose([Validators.required, Validators.minLength(3)])],
-      email: [this.editedContact.email, Validators.compose([Validators.required, this.emailValidForm])],
-      addressStreet: [this.editedContact.addressStreet],
-      addressCity:[this.editedContact.addressCity],
-      addressState:[this.editedContact.addressState],
-      addressCode:[this.editedContact.addressCode],
-      addressCountry:[this.editedContact.addressCountry]
-    })
-
+      firstName: [this.contact.firstName, Validators.compose([Validators.required, Validators.minLength(3)])],
+      lastName: [this.contact.lastName, Validators.compose([Validators.required, Validators.minLength(3)])],
+      email: [this.contact.email, Validators.compose([Validators.required, this.emailValidForm])],
+      addressStreet: [this.contact.addressStreet],
+      addressCity:[this.contact.addressCity],
+      addressState:[this.contact.addressState],
+      addressCode:[this.contact.addressCode],
+      addressCountry:[this.contact.addressCountry]
+    });
     this.firstName = this.contactForm.controls['firstName'];
     this.lastName = this.contactForm.controls['lastName'];
     this.email = this.contactForm.controls['email'];
 
-    this.contactForm.value.firstName = this.editedContact.firstName;
+    this.contactForm.value.firstName = this.contact.firstName;
 
   }
+  initForm(){
 
+  }
   emailValidForm(c: Control) {
     var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
 
@@ -71,7 +74,8 @@ export class EditContactPage {
         buttons: [
                 { text:'Ok',
                   handler: () => {
-                    nav.setPages([{page: HomePage }]);
+                    nav.push(ListContactPage);
+                    //this.nav.push(LeadInfoPage, {company: company});
                   }
               }]
       });
@@ -113,7 +117,7 @@ export class EditContactPage {
       let id = "";
       contact =
       {
-        "idContact":this.editedContact.idContact,
+        "idContact":this.contact.idContact,
         "firstName":this.contactForm.value.firstName,
         "lastName":this.contactForm.value.lastName,
         "email": this.contactForm.value.email,
@@ -131,6 +135,32 @@ export class EditContactPage {
   }
 
   cancel() {
-    this.app.getComponent("nav").setRoot(HomePage);
+    this.app.getComponent("nav").setRoot(ListContactPage);
+
+    //this.viewCtrl.dismiss();
+
   }
+  delete(){
+    let alert = Alert.create(
+      {
+        title: 'Delete Contact',
+        message: "Sure?",
+        buttons: [
+          {
+            text:'Yes',
+            handler: () => {
+              //do nothing on complete
+            }
+          },
+          {
+            text:'No',
+            handler: () => {
+              //do nothing on complete
+            }
+          }
+        ]
+      });
+      this.app.getComponent("nav").present(alert);
+    }
+
 }

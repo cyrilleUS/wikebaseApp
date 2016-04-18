@@ -116,7 +116,27 @@ export class ContactServices {
           .catch( this.errorService.handleCallError );
     }
 
+    callEditContact( contact: Contact ){
+      let body = "locale=fr_US";
+      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
+        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+        body += "&sessionToken=" + sessionToken;
+      }
+      body += this.toXformString(contact);
+      console.log("before request, body="+body);
+      let headers = new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      });
+      let options = new RequestOptions({
+        headers: headers
+      });
+      return this.http.post( editContactURL, body, options )
+          .map(res => res.json())
+          .catch( this.errorService.handleCallError );
+    }
+//******************************************************************************
     getAll() {
+      this.alphaAscSort();
       return this.contactList;
     }
     getContactListSize(){
@@ -150,7 +170,7 @@ export class ContactServices {
 
     private toXformString(contact: Contact) {
       let output: string = "";
-      if(contact.idContact) { output += "&id="+contact.idContact; }
+      if(contact.idContact) { output += "&idContact="+contact.idContact; }
       if(contact.firstName) { output += "&firstName="+contact.firstName; }
       if(contact.lastName) { output += "&lastName="+contact.lastName; }
       if(contact.email) { output += "&email="+contact.email; }
@@ -163,25 +183,7 @@ export class ContactServices {
     }
 
 
-    callEditContact( contact: Contact ){
-      //console.log("callSaveContact, userService.id="+this.userServices.loggedUser.idUser);
-      let body = "locale=fr_US";
-      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
-        let sessionToken: string = this.userServices.loggedUser.sessionToken;
-        body += "&sessionToken=" + sessionToken;
-      }
-      body += this.toXformString(contact);
-      console.log("before request, body="+body);
-      let headers = new Headers({
-        'Content-Type': 'application/x-www-form-urlencoded'
-      });
-      let options = new RequestOptions({
-        headers: headers
-      });
-      return this.http.post( editContactURL, body, options )
-          .map(res => res.json())
-          .catch( this.errorService.handleCallError );
-    }
+
 
     editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
       let loggerMethod: string = ".editContact";
