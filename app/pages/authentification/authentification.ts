@@ -1,4 +1,4 @@
-import {IonicApp, Page, Alert, MenuController} from 'ionic-angular';
+import {IonicApp, ViewController, Page, Alert, MenuController, NavController} from 'ionic-angular';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 import {HomePage} from '../home/home';
 import {UserServices} from '../../services/userServices';
@@ -9,24 +9,23 @@ import {Observable} from 'rxjs/Observable';
   templateUrl: 'build/pages/authentification/authentification.html',
 })
 export class AuthentificationPage {
-  userServices: UserServices;
   loginForm: ControlGroup;
   email: AbstractControl;
   password: AbstractControl;
-  menu: MenuController
 
-  constructor( private app: IonicApp, userServices: UserServices, form: FormBuilder, menu: MenuController ) {
-    this.menu = menu;
-    this.menu.enable(false);
-    this.userServices = userServices;
-
-    this.loginForm = form.group ({
+  constructor( private app: IonicApp, private nav: NavController, private viewController: ViewController, private menuController: MenuController, private formBuilder: FormBuilder, private userServices: UserServices ) {
+    this.loginForm = formBuilder.group ({
       email: ['', Validators.compose([Validators.required, this.emailValidForm])],
-      password: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
+      password: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
     })
 
     this.email = this.loginForm.controls['email'];
     this.password = this.loginForm.controls['password'];
+  }
+
+  onPageLoaded(){
+    this.menuController.enable(false);
+    this.viewController.showBackButton(false);
   }
 
   emailValidForm( control: Control ) {
@@ -65,10 +64,7 @@ export class AuthentificationPage {
         buttons: [
           { text:"ok",
             handler: () => {
-              nav.setPages([
-                {page: HomePage}
-                ]);
-
+              nav.setRoot(HomePage);
             }
           }
         ]
@@ -103,6 +99,6 @@ export class AuthentificationPage {
   }
 
   onPageWillLeave() {
-    this.menu.enable(true);
+
   }
 }

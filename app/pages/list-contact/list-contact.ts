@@ -8,18 +8,17 @@ import {EditContactPage} from '../edit-contact/edit-contact';
   templateUrl: 'build/pages/list-contact/list-contact.html',
 })
 export class ListContactPage {
-  contactServices: ContactServices;
   contactList: Array<Contact>;
 
 
-  constructor(contactServices: ContactServices, private app: IonicApp, public nav: NavController) {
-    this.contactServices = contactServices;
-    this.nav = nav;
+  constructor( private app: IonicApp, private nav: NavController, private viewController: ViewController, private contactServices: ContactServices ) {
+    this.contactList = this.contactServices.getAll();
   }
 
   onPageLoaded(){
     console.log("list contact loaded");
-    this.contactList = this.contactServices.getAll();
+    this.contactServices.refresh();
+
   }
   onPageWillEnter() {
     /*to do just before the display of the page*/
@@ -40,13 +39,13 @@ export class ListContactPage {
     console.log("about to edit contact:"+contact.firstName);
     /*let modal = Modal.create(EditContactPage, contact);
     this.nav.present(modal);*/
-    this.app.getComponent("nav").setRoot(EditContactPage, {
+    this.nav.setRoot(EditContactPage, {
       contact: contact
     });
   }
 
   showNewContactPage() {
-    let nav = this.app.getComponent("nav");
-    nav.setRoot(NewContactPage);
+    //let nav = this.app.getComponent("nav");
+    this.nav.push(NewContactPage);
   }
 }

@@ -1,4 +1,4 @@
-import {Page, IonicApp, Alert} from 'ionic-angular';
+import {IonicApp, NavController, ViewController, Alert, Page} from 'ionic-angular';
 import {ContactServices} from '../../services/contactServices';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 import {HomePage} from '../home/home';
@@ -8,15 +8,14 @@ import {Contact} from '../../models/contact';
   templateUrl: 'build/pages/new-contact/new-contact.html'
 })
 export class NewContactPage {
-  contactServices: ContactServices;
   contactForm: ControlGroup;
   firstName: AbstractControl;
   lastName: AbstractControl;
   email: AbstractControl;
 
-  constructor( contactServices: ContactServices, form: FormBuilder,  private app: IonicApp ) {
-    this.contactServices = contactServices;
-    this.contactForm = form.group ({
+  constructor( private app: IonicApp, private nav: NavController, private viewController: ViewController, private contactServices: ContactServices, private formBuilder: FormBuilder ) {
+
+    this.contactForm = formBuilder.group ({
       firstName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
       lastName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
       email: ['', Validators.compose([Validators.required, this.emailValidForm])],
@@ -39,6 +38,7 @@ export class NewContactPage {
     return null;
   }
   onPageLoaded(){
+    this.viewController.showBackButton(false);
     //to do when we load the page the first time
     //works the same as ngOnInit
   }
@@ -86,7 +86,7 @@ export class NewContactPage {
 
   addNewContact( event ) {
     if( !this.contactForm.valid ) {
-      this.errorPopup( "invalid form", this.app.getComponent("nav") );
+      this.errorPopup( "invalid form", this.nav );
     }
     else {
       let contact: Contact;
@@ -105,12 +105,17 @@ export class NewContactPage {
       };
       let successCallback = this.successPopup;
       let errorCallback = this.errorPopup;
-      let callbackComponent = this.app.getComponent("nav");
+      let callbackComponent = this.nav;
       this.contactServices.addContact( contact, successCallback, errorCallback, callbackComponent );
     }
   }
 
   cancel() {
-    this.app.getComponent("nav").setRoot(HomePage);
+    if ( this.nav.canGoBack() ){
+        this.nav.pop();
+    }else{
+        this.nav.push(HomePage);
+    }
+
   }
 }

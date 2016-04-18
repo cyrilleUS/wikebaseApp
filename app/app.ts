@@ -25,6 +25,7 @@ export class MyApp {
   contactServices: ContactServices;
   userServices: UserServices;
   errorService: ErrorService;
+
   constructor(private app: IonicApp, private platform: Platform, contactServices: ContactServices, userServices: UserServices, errorService: ErrorService) {
 
     this.contactServices = contactServices;
@@ -43,9 +44,11 @@ export class MyApp {
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
-      StatusBar.styleDefault();
-    });
+    this.platform.ready().then(
+      () => {
+        StatusBar.styleDefault();
+      }
+    );
     this.userServices.init();
   }
 

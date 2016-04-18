@@ -21,6 +21,7 @@ export class ContactServices {
     userServices: UserServices;
     contactList: Array<Contact>;
     initErrorMessage: string;
+    initiated: boolean = false;
     private _loggerHeader: string = "error in contactServices";
 
     constructor (http: Http, userServices: UserServices, errorService: ErrorService) {
@@ -30,6 +31,7 @@ export class ContactServices {
     }
     //initiate contactList
     init() {
+      console.log("contactService.init");
       let loggerMethod: string = ".init";
       let restMessage: RestMessage;
       //call http post, response is already parsed to json
@@ -41,6 +43,7 @@ export class ContactServices {
               this.contactList = restMessage.multipleResults;
               this.initErrorMessage = "";
               this.alphaAscSort();
+              this.initiated = true;
           }else if ( restMessage.status == "failure" ){
             let errorMessage: string;
             this.errorService.handleRestMessageError(restMessage.errors, this._loggerHeader + loggerMethod).subscribe(
@@ -49,6 +52,7 @@ export class ContactServices {
               () => {
                 this.contactList = this.setUpEmptyContactList();
                 this.initErrorMessage = errorMessage;
+                this.initiated = false;
               }
             );
           }else{
@@ -59,6 +63,7 @@ export class ContactServices {
               () => {
                 this.contactList = this.setUpEmptyContactList();
                 this.initErrorMessage = errorMessage;
+                this.initiated = false;
               }
             );
           }
@@ -71,6 +76,7 @@ export class ContactServices {
             () => {
               this.contactList = this.setUpEmptyContactList();
               this.initErrorMessage = errorMessage;
+              this.initiated = false;
             }
           );
         }
@@ -135,7 +141,18 @@ export class ContactServices {
           .catch( this.errorService.handleCallError );
     }
 //******************************************************************************
+    isInitiated(){
+      return this.initiated;
+    }
+    refresh(){
+      console.log("contactService.refesh");
+      this.initiated = false;
+    }
     getAll() {
+      console.log("contactService.getAll");
+      if ( !this.initiated ){
+        this.init();
+      }
       this.alphaAscSort();
       return this.contactList;
     }

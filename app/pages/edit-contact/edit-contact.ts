@@ -10,19 +10,17 @@ import {Observable} from 'rxjs/Observable';
   templateUrl: 'build/pages/edit-contact/edit-contact.html'
 })
 export class EditContactPage {
-  contactServices: ContactServices;
   contactForm: ControlGroup;
   firstName: AbstractControl;
   lastName: AbstractControl;
   email: AbstractControl;
-  //editedContact: Contact;
   contact: Contact;
 
-  constructor(contactServices: ContactServices, form: FormBuilder,  private app: IonicApp, public platform: Platform, navParams: NavParams, public viewCtrl: ViewController) {
-    this.contactServices = contactServices;
+  constructor( private app: IonicApp, private nav: NavController, private navParams: NavParams, private viewCtrl: ViewController, private formBuilder: FormBuilder, private contactServices: ContactServices ) {
+
     this.contact = navParams.get('contact');
     console.log("in edit-contact constructor, contact:"+this.contact.firstName);
-    this.contactForm = form.group ({
+    this.contactForm = formBuilder.group ({
       firstName: [this.contact.firstName, Validators.compose([Validators.required, Validators.minLength(3)])],
       lastName: [this.contact.lastName, Validators.compose([Validators.required, Validators.minLength(3)])],
       email: [this.contact.email, Validators.compose([Validators.required, this.emailValidForm])],
@@ -129,15 +127,13 @@ export class EditContactPage {
       };
       let successCallback = this.successPopup;
       let errorCallback = this.errorPopup;
-      let callbackComponent = this.app.getComponent("nav");
+      let callbackComponent = this.nav;
       this.contactServices.editContact( contact, successCallback, errorCallback, callbackComponent);
     }
   }
 
   cancel() {
-    this.app.getComponent("nav").setRoot(ListContactPage);
-
-    //this.viewCtrl.dismiss();
+    this.nav.setRoot(ListContactPage);
 
   }
   delete(){
@@ -160,7 +156,7 @@ export class EditContactPage {
           }
         ]
       });
-      this.app.getComponent("nav").present(alert);
+      this.nav.present(alert);
     }
 
 }
