@@ -192,7 +192,7 @@ export class ContactServices {
         }
       );
     }
-    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
+    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, successComponent: any, errorComponent: any ) {
       let loggerMethod: string = ".editContact";
       let restMessage: RestMessage;
       this.callEditContact( contact ).subscribe(
@@ -210,10 +210,10 @@ export class ContactServices {
         if(restMessage.status == "success") {
             let updatedContact : Contact = restMessage.singleResult;
             this.contactList[this.getContactIndexById(updatedContact.idContact)] = updatedContact;
-            successCallback(component);
+            successCallback(successComponent);
         }else if ( restMessage.status == "failure" ){
           //let errorMessage = this.handleRestMessageError( restMessage.errors, loggerMethod);
-          errorCallback( this.errorService.handleRestMessageError( restMessage.errors, loggerMethod), component );
+          errorCallback( this.errorService.handleRestMessageError( restMessage.errors, loggerMethod), errorComponent );
         }else{
           let errorMessage = "restMessageStatus undefinied: bad request";
           console.error( this._loggerHeader + loggerMethod + errorMessage);
@@ -222,6 +222,22 @@ export class ContactServices {
       }
       );
     }
+
+    sortContactByName() {
+      this.alphaAscSort();
+      return this.contactList;
+    }
+
+    sortContactByDate() {
+      this.contactList.sort(
+        (contact1, contact2) => {
+          if (contact1.idContact < contact2.idContact) return -1;
+          if (contact1.idContact > contact2.idContact) return 1;
+        return 0;
+      });
+      return this.contactList;
+    }
+
     deleteContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ){
       let loggerMethod: string = ".deleteContact";
       let restMessage: RestMessage;
@@ -283,8 +299,8 @@ export class ContactServices {
     private alphaAscSort(){
         this.contactList.sort(
           (conact1, contact2) => {
-            if (conact1.lastName < contact2.lastName) return -1;
-            if (conact1.lastName > contact2.lastName) return 1;
+            if (conact1.lastName.toLowerCase() < contact2.lastName.toLowerCase()) return -1;
+            if (conact1.lastName.toLowerCase() > contact2.lastName.toLowerCase()) return 1;
           return 0;
         });
     }

@@ -6,7 +6,7 @@ import {ContactDetailPage} from './pages/contact-detail/contact-detail';
 import {ListContactPage} from './pages/list-contact/list-contact';
 import {NewContactPage} from './pages/new-contact/new-contact';
 import {AuthentificationPage} from './pages/authentification/authentification';
-
+import {LoadingModal} from './components/loading-modal/loading-modal';
 import {ContactServices} from './services/contactServices';
 import {UserServices} from './services/userServices';
 import {ErrorService} from './services/errorService';
@@ -17,7 +17,8 @@ import {Contact} from './models/contact';
 @App({
   templateUrl: 'build/app.html',
   config: {}, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers: [ContactServices, UserServices, ErrorService]
+  providers: [ContactServices, UserServices, ErrorService],
+  directives: [LoadingModal]
 })
 export class MyApp {
   rootPage: any;

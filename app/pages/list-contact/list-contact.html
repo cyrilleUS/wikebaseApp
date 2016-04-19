@@ -5,13 +5,16 @@
   <button right id="addContactButton" wikebasePaleBlue (click)="showNewContactPage()">
     <ion-icon name="add"></ion-icon>
   </button>
+  <button right id="sortContactButton" wikebasePaleBlue (click)="sortContactAlert()">
+    <ion-icon name="options"></ion-icon>
+  </button>
   <ion-title>Contact List</ion-title>
 </ion-navbar>
 
 <ion-content id="list-contactContent" padding>
   <ion-list class="contactList" *ngFor="#contact of contactList">
     <ion-item-sliding>
-      <ion-item>
+      <ion-item (click)="contactDetail($event, contact)">
         <ion-avatar item-left>
           <img src="img/noPicture.png">
         </ion-avatar>

@@ -1,5 +1,6 @@
 import {IonicApp, Modal, Platform, NavController, NavParams, Page, ViewController, Alert} from 'ionic-angular';
 import {ContactServices} from '../../services/contactServices';
+import {Toast} from 'ionic-native';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 import {HomePage} from '../home/home';
 import {ListContactPage} from '../list-contact/list-contact';
@@ -19,7 +20,6 @@ export class EditContactPage {
   constructor( private app: IonicApp, private nav: NavController, private navParams: NavParams, private viewController: ViewController, private formBuilder: FormBuilder, private contactServices: ContactServices ) {
 
     this.contact = navParams.get('contact');
-    console.log("in edit-contact constructor, contact:"+this.contact.firstName);
     this.contactForm = formBuilder.group ({
       firstName: [this.contact.firstName, Validators.compose([Validators.required, Validators.minLength(3)])],
       lastName: [this.contact.lastName, Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -67,10 +67,28 @@ export class EditContactPage {
   onPageWillUnload() {}
   onPageDidUnload() {}
 
-  successPopup(nav: any){
+  successPopup(app: any){
+    /*cordova plugin add cordova-plugin-x-toast
+    Toast.show("Contact saved", "5000", "bottom").subscribe(
+      toast => {
+        console.log(toast);
+      }
+    ); Native component, got to test with emulator or device.*/
+
+    let loading = app.getComponent("loading");
+    loading.show();
+    setTimeout(() => {
+      loading.hide();
+      app.getComponent("nav").setRoot(ListContactPage);
+    }, 2000);
+    //nav.present(loading);
+  }
+
+
+  successDeletePopup(nav: any){
     let alert = Alert.create({
-        title: 'Contact Saved',
-        message: "Your contact edit succeed !",
+        title: 'Contact Deleted',
+        message: "Your contact has been deleted !",
         buttons: [
                 { text:'Ok',
                   handler: () => {
@@ -79,8 +97,9 @@ export class EditContactPage {
               }]
       });
     nav.present(alert);
+
   }
-  
+
 
   errorPopup(messageToDisplay: Observable<string>, nav: any){
     let message: string;
@@ -132,8 +151,9 @@ export class EditContactPage {
       };
       let successCallback = this.successPopup;
       let errorCallback = this.errorPopup;
-      let callbackComponent = this.nav;
-      this.contactServices.editContact( contact, successCallback, errorCallback, callbackComponent);
+      let successCallbackComponent = this.app;
+      let errorCallbackComponent = this.nav;
+      this.contactServices.editContact( contact, successCallback, errorCallback, successCallbackComponent, errorCallbackComponent);
     }
   }
 
@@ -141,6 +161,31 @@ export class EditContactPage {
     this.viewController.dismiss();
   }
 
+  public delete(){
+    let alert = Alert.create(
+      {
+        title: 'Delete Contact',
+        message: "Sure?",
+        buttons: [
+          {
+            text:'Yes',
+            handler: () => {
+              let successCallback = this.successDeletePopup;
+              let errorCallback = this.errorPopup;
+              let callbackComponent = this.nav;
+              this.contactServices.deleteContact( this.contact, successCallback, errorCallback, callbackComponent);
+            }
+          },
+          {
+            text:'No',
+            handler: () => {
+              //do nothing on complete
+            }
+          }
+        ]
+      });
+      this.nav.present(alert);
+    }
 
 
 }
