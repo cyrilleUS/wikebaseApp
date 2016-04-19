@@ -1,4 +1,5 @@
-import {Page, IonicApp, MenuController, NavController} from 'ionic-angular';
+import {Page, IonicApp, MenuController, NavController, Alert} from 'ionic-angular';
+import {Observable} from 'rxjs/Observable';
 import {UserServices} from '../../services/userServices';
 import {ContactServices} from '../../services/contactServices';
 import {AuthentificationPage} from '../authentification/authentification';
@@ -32,7 +33,37 @@ export class HomePage {
   onPageDidUnload() {}
 
   disconnect() {
-    this.userServices.deleteLoggedUser();
-    this.nav.setRoot(AuthentificationPage);
+    this.userServices.disconnect(this.userServices.loggedUser, this.disconnectSucess, this.errorPopup, this.nav);
+  }
+
+  disconnectSucess(nav: any) {
+      nav.setRoot(AuthentificationPage);
+  }
+
+  errorPopup(messageToDisplay: Observable<string>, nav: any){
+    let message: string;
+    messageToDisplay.subscribe(
+      //
+      data => {
+        message = data;
+      }, error => {
+        //todo
+      }, () => {
+        let alert = Alert.create(
+          {
+            title: 'Disconnect Failed',
+            message: ''+ message,
+            buttons: [
+              {
+                text:'Ok',
+                handler: () => {
+                  //do nothing on complete
+                }
+              }
+            ]
+          });
+          nav.present(alert);
+        }
+      );
   }
 }

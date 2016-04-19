@@ -10,7 +10,8 @@ import {RestMessage} from '../models/restMessage';
 import 'rxjs/Rx';
 
 let favorites = [],
-    loginURL = "http://local.uniquesound.com/mobileApp/MobileAppUserCross" + '/login'
+    loginURL = "http://local.uniquesound.com/mobileApp/MobileAppUserCross" + '/login',
+    disconnectURL = "http://local.uniquesound.com/mobileApp/MobileAppUserCross" + '/disconnect'
 
 
 @Injectable()
@@ -45,6 +46,20 @@ export class UserServices {
           .map( res => res.json() )
           .catch( this.errorService.handleCallError );
     }
+
+    callDisconnect( mobileTokenSessionId: string) {
+        let loggerMethod: string = ".callDisconnect";
+        let body = "locale=fr_US&sessionToken=" + mobileTokenSessionId;
+        let headers = new Headers({
+          'Content-Type': 'application/x-www-form-urlencoded'
+        });
+        let options = new RequestOptions({
+          headers: headers
+        });
+        return this.http.post( disconnectURL, body, options )
+            .map( res => res.json() )
+            .catch( this.errorService.handleCallError );
+    }
 //******************************************************************************
 //PUBLIC METHODS****************************************************************
 //******************************************************************************
@@ -76,8 +91,34 @@ export class UserServices {
       );
     }
 
-    deleteLoggedUser() {
-      this.initUser();
+    disconnect( user: User, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
+        console.log("session= " + this.loggedUser.sessionToken);
+        let loggerMethod: string = ".disconnect";
+        let restMessage: RestMessage;
+        this.callDisconnect(user.sessionToken).subscribe(
+          //observable.next
+          data => {
+            restMessage = data;
+          },
+          //observable.error
+          error => {
+            errorCallback( this.errorService.handleSubscribeError( error, this._loggerHeader + loggerMethod), component );
+          },
+          //observable.complete
+          () => {
+            if(restMessage.status == "success") {
+                this.initUser();
+                successCallback(component);
+                console.log("sessionFinale= " + this.loggedUser.sessionToken);
+            }else if ( restMessage.status == "failure" ){
+              errorCallback( this.errorService.handleRestMessageError( restMessage.errors, this._loggerHeader + loggerMethod), component );
+            }else{
+              let errorMessage = "restMessageStatus undefinied: bad request";
+              console.error( this._loggerHeader + loggerMethod + errorMessage);
+              errorCallback( this.errorService.handleUndefinedRestMessageError( this._loggerHeader + loggerMethod), component );
+            }
+        }
+        );
     }
 //******************************************************************************
 //ERRORS HANDLING***************************************************************
