@@ -20,7 +20,6 @@ export class EditContactPage {
   constructor( private app: IonicApp, private nav: NavController, private navParams: NavParams, private viewController: ViewController, private formBuilder: FormBuilder, private contactServices: ContactServices ) {
 
     this.contact = navParams.get('contact');
-    console.log("in edit-contact constructor, contact:"+this.contact.firstName);
     this.contactForm = formBuilder.group ({
       firstName: [this.contact.firstName, Validators.compose([Validators.required, Validators.minLength(3)])],
       lastName: [this.contact.lastName, Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -85,6 +84,7 @@ export class EditContactPage {
     //nav.present(loading);
   }
 
+
   successDeletePopup(nav: any){
     let alert = Alert.create({
         title: 'Contact Deleted',
@@ -99,6 +99,7 @@ export class EditContactPage {
     nav.present(alert);
 
   }
+
 
   errorPopup(messageToDisplay: Observable<string>, nav: any){
     let message: string;
@@ -159,6 +160,7 @@ export class EditContactPage {
   cancel() {
     this.viewController.dismiss();
   }
+
   public delete(){
     let alert = Alert.create(
       {
@@ -184,5 +186,6 @@ export class EditContactPage {
       });
       this.nav.present(alert);
     }
+
 
 }

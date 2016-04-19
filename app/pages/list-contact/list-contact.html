@@ -14,7 +14,7 @@
 <ion-content id="list-contactContent" padding>
   <ion-list class="contactList" *ngFor="#contact of contactList">
     <ion-item-sliding>
-      <ion-item>
+      <ion-item (click)="contactDetail($event, contact)">
         <ion-avatar item-left>
           <img src="img/noPicture.png">
         </ion-avatar>
@@ -24,9 +24,9 @@
         <p>{{contact.addressCode}} {{contact.addressState}} {{contact.addressCountry}}</p>
       </ion-item>
       <ion-item-options>
-        <button class="editContactButton" (click)="editContact(contact)">
-          <ion-icon name="create"></ion-icon>
-            Edit
+        <button class="deleteContactButton" (click)="deleteContact(contact)">
+          <ion-icon name="close-circle"></ion-icon>
+            Delete
         </button>
       </ion-item-options>
   </ion-item-sliding>

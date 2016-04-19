@@ -192,7 +192,7 @@ export class ContactServices {
         }
       );
     }
-    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, successComponent:any, errorComponent ) {
+    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, successComponent: any, errorComponent: any ) {
       let loggerMethod: string = ".editContact";
       let restMessage: RestMessage;
       this.callEditContact( contact ).subscribe(

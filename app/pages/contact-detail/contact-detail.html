@@ -3,12 +3,39 @@
   <button menuToggle>
     <ion-icon name="menu"></ion-icon>
   </button>
-  <ion-title>TODO: Name of the contact</ion-title>
+  <ion-title>{{contact.firstName}} {{contact.lastName}}</ion-title>
 </ion-navbar>
 
 <ion-content padding>
-  <h3>contact detail page</h3>
-  <ion-card>
-    <p>this is where we display all the contact's details and where we'll call him using its phone number</p>
-  </ion-card>
+    <ion-item>
+      <h3>First Name</h3>
+      <p>{{contact.firstName}}</p>
+    </ion-item>
+    <ion-item>
+      <h3>Last Name</h3>
+      <p>{{contact.lastName}}</p>
+    </ion-item>
+    <button (click)="edit()">Edit</button>
+    <ion-item>
+      <h3>Email</h3>
+      <p>{{contact.email}}</p>
+    </ion-item>
+    <ion-item>
+      <h3>Mobile</h3>
+      <p>{{contact.mobileNumber}}</p>
+      <div class="buttons"><a href="tel:{{contact.mobileNumber}}" target="_new">(Direct Call: {{contact.mobileNumber}})</a></div>
+    </ion-item>
+    <ion-item>
+      <h3>Phone Number</h3>
+      <p>{{contact.phoneNumber}}</p>
+      <button (click)="call()">{{contact.phoneNumber}}</button>
+    </ion-item>
+    <ion-item>
+      <h3>Address</h3>
+      <p>{{contact.addressStreet}}</p>
+      <p>{{contact.addressCity}}</p>
+      <p>{{contact.addressState}}</p>
+      <p>{{contact.addressCode}}</p>
+      <p>{{contact.addressCountry}}</p>
+    </ion-item>
 </ion-content>
