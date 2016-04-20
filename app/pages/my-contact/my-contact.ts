@@ -3,7 +3,7 @@
 // Warning, all the contact object use in this page are the contacts from the cordova-plugin-contacts.
 // *****************************************************************
 
-import {Page, Alert, IonicApp} from 'ionic-angular';
+import {Page, Alert, IonicApp, ViewController} from 'ionic-angular';
 import {NewContactPage} from '../new-contact/new-contact';
 
 @Page({
@@ -12,9 +12,9 @@ import {NewContactPage} from '../new-contact/new-contact';
 export class MyContactPage {
 
     searchQuery: string;
-    contactList: Contact[];
+    contactList: any;
 
-    constructor(private app: IonicApp) {
+    constructor(private app: IonicApp, private viewController: ViewController) {
         this.searchQuery = '';
         this.getAllContact();
     }
@@ -24,47 +24,66 @@ export class MyContactPage {
         // On sucess
         allContacts => {
             this.contactList = allContacts;
+            this.debugAlert("get all contact sucess", 'Found ' + allContacts.length + ' contacts.');
         },
         // On error
         onerror => {
-            let alert = Alert.create({
-              title: "No results",
-              message: "There are no contacts with this name on your phone.",
-              buttons: [
-                { text:"ok"}
-              ]
-            });
+            this.debugAlert("get all contact fail", "");
         // Options
         });
     }
 
-    getContact(searchbar) {
-        this.getAllContact();
-        let search: string = searchbar.value;
-        if(search.trim() != '') {
-            this.contactList.filter((contact) => {
-                if(contact.name.formatted.toLowerCase().indexOf(contact.name.formatted.toLowerCase()) > -1) {
-                    return true;
-                }
-                return false;
-            });
-        }
-        else {
-            return;
-        }
+    getContact() {
+        let options = new ContactFindOptions( );
 
+        options.filter =  this.searchQuery;  //leaving this empty will find return all contacts
+
+        options.multiple = true;  //return multiple results
+
+        let filter = ["displayName"];
+
+        navigator.contacts.find(filter,
+        // On sucess
+        allContacts => {
+            this.contactList = allContacts;
+            this.debugAlert("get contact sucess", "search:"+this.searchQuery+'. Found ' + allContacts.length + ' contacts.');
+        },
+        // On error
+        onerror => {
+            this.debugAlert("get contact fail", "search:"+this.searchQuery);
+        // Options
+    }, options);
     }
 
-    AddContact(cordovaContact: Contact) {
+    addContact(cordovaContact: Contact) {
         // Push to New Contact page
+        this.debugAlert("Add contact", cordovaContact.name.givenName);
+        this.cancel();
         this.app.getComponent("nav").setRoot(NewContactPage, {
-            contactFirstName: cordovaContact.name.givenName,
-            contactLastName: cordovaContact.name.familyName,
-            contactAddressStreet : cordovaContact.addresses[0].streetAddress,
-            contactAddressCity : cordovaContact.addresses[0].locality,
-            contactAddressState : cordovaContact.addresses[0].region,
-            contactAddressCode : cordovaContact.addresses[0].postalCode,
-            contactAddressCountry : cordovaContact.addresses[0].country
-        })
+            firstName : cordovaContact.name.givenName,
+            lastName : cordovaContact.name.familyName,
+            streetAddress : cordovaContact.addresses[0].streetAddress,
+            streetCity : cordovaContact.addresses[0].locality,
+            streetState : cordovaContact.addresses[0].region,
+            streetCode : cordovaContact.addresses[0].postalCode,
+            streetCountry : cordovaContact.addresses[0].country,
+            phoneNumbers : cordovaContact.phoneNumbers[0].value,
+            email : cordovaContact.emails[0].value
+        });
+    }
+
+    cancel() {
+      this.viewController.dismiss();
+    }
+
+    debugAlert(title: string, message: string) {
+        let alert = Alert.create({
+          title: title,
+          message: message,
+          buttons: [
+            { text:"ok"}
+          ]
+        });
+        this.app.getComponent("nav").present(alert);
     }
 }

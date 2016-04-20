@@ -1,6 +1,5 @@
 import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
-
 import {HomePage} from './pages/home/home';
 import {ContactDetailPage} from './pages/contact-detail/contact-detail';
 import {ListContactPage} from './pages/list-contact/list-contact';
@@ -10,16 +9,19 @@ import {LoadingModal} from './components/loading-modal/loading-modal';
 import {ContactServices} from './services/contactServices';
 import {UserServices} from './services/userServices';
 import {ErrorService} from './services/errorService';
-
 import {Contact} from './models/contact';
 
 
 @App({
   templateUrl: 'build/app.html',
-  config: {}, // http://ionicframework.com/docs/v2/api/config/Config/
+  config: {
+        scrollAssist: false,
+        autoFocusAssist: false
+    }, // http://ionicframework.com/docs/v2/api/config/Config/
   providers: [ContactServices, UserServices, ErrorService],
   directives: [LoadingModal]
 })
+
 export class MyApp {
   rootPage: any;
   pages: Array<{title: string, component: any}>;

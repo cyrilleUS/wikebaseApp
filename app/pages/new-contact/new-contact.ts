@@ -1,5 +1,5 @@
 
-import {IonicApp, NavController, ViewController, Alert, Page, Modal} from 'ionic-angular';
+import {IonicApp, NavController, ViewController, Alert, Page, Modal, NavParams} from 'ionic-angular';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 
 import {ContactServices} from '../../services/contactServices';
@@ -17,20 +17,38 @@ export class NewContactPage {
   email: AbstractControl;
 
 
-  constructor( private app: IonicApp, private nav: NavController, private viewController: ViewController, private contactServices: ContactServices, private formBuilder: FormBuilder ) {
+  constructor( private app: IonicApp, private nav: NavController, private viewController: ViewController, private contactServices: ContactServices, private formBuilder: FormBuilder, private navParams: NavParams ) {
 
-    this.contactForm = formBuilder.group ({
-      firstName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
-      lastName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
-      email: ['', Validators.compose([Validators.required, this.emailValidForm])],
-      addressStreet: [''],
-      addressCity:[''],
-      addressState:[''],
-      addressCode:[''],
-      addressCountry:[''],
-      mobileNumber:[''],
-      phoneNumber:['']
-    })
+    let contact: Contact = navParams.get("contact");
+    if(!contact)
+    {
+        this.contactForm = formBuilder.group ({
+        firstName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
+        lastName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
+        email: ['', Validators.compose([Validators.required, this.emailValidForm])],
+        addressStreet: [''],
+        addressCity:[''],
+        addressState:[''],
+        addressCode:[''],
+        addressCountry:[''],
+        mobileNumber:[''],
+        phoneNumber:['']
+      })
+    }
+    else {
+        this.contactForm = formBuilder.group ({
+        firstName: [contact.firstName, Validators.compose([Validators.required, Validators.minLength(3)])],
+        lastName: [contact.lastName, Validators.compose([Validators.required, Validators.minLength(3)])],
+        email: [contact.email, Validators.compose([Validators.required, this.emailValidForm])],
+        addressStreet: [contact.addressStreet],
+        addressCity:[contact.addressCity],
+        addressState:[contact.addressState],
+        addressCode:[contact.addressCode],
+        addressCountry:[contact.addressCountry],
+        mobileNumber:[contact.mobileNumber],
+        phoneNumber:[contact.phoneNumber]
+        })
+    }
     this.firstName = this.contactForm.controls['firstName'];
     this.lastName = this.contactForm.controls['lastName'];
     this.email = this.contactForm.controls['email'];

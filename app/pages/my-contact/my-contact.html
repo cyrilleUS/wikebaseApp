@@ -1,20 +1,17 @@
 <ion-content id="list-contactContent" padding>
-    <ion-searchbar [(ngModel)]="searchQuery" (input)="getContact($event)"></ion-searchbar>
-        <ion-sliding-item>
+    <ion-searchbar [(ngModel)]="searchQuery" (search)="getContact($event)"></ion-searchbar>
         <ion-list class="contactList" *ngFor="#contact of contactList">
             <ion-item>
                 <ion-avatar item-left>
                   <img src="img/noPicture.png">
                 </ion-avatar>
-                <h2>{{contact.name.formatted}}</h2>
-                <p>{{contact.addresses[0].formatted}}</p>
+                <h2>{{contact.displayName}}</h2>
+                <ion-avatar item-right>
+                    <button class="addContactButton" (click)="addContact(contact)">
+                      <ion-icon name="add"></ion-icon>
+                        Add
+                    </button>
+                </ion-avatar>
             </ion-item>
-            <ion-item-options>
-              <button class="addContactButton" (click)="addContact(contact)">
-                <ion-icon name="add"></ion-icon>
-                  Add Contact
-              </button>
-            </ion-item-options>
         </ion-list>
-    </ion-sliding-item>
 </ion-content>
