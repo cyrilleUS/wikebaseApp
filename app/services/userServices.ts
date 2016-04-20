@@ -10,9 +10,9 @@ import {RestMessage} from '../models/restMessage';
 import 'rxjs/Rx';
 
 let favorites = [],
-    loginURL = "http://local.uniquesound.com/mobileApp/MobileAppUserCross" + '/login',
-    disconnectURL = "http://local.uniquesound.com/mobileApp/MobileAppUserCross" + '/disconnect'
-
+    domain = "http://www.valleydesigners.com",
+    loginURL = domain + "/mobileApp/MobileAppUserCross/login",
+    disconnectURL = domain + "/mobileApp/MobileAppUserCross/disconnect"
 
 @Injectable()
 export class UserServices {
@@ -49,7 +49,11 @@ export class UserServices {
 
     callDisconnect( mobileTokenSessionId: string) {
         let loggerMethod: string = ".callDisconnect";
-        let body = "locale=fr_US&sessionToken=" + mobileTokenSessionId;
+        let body = "locale=fr_US";
+        if (this.loggedUser && this.loggedUser.sessionToken){
+          let sessionToken: string = this.loggedUser.sessionToken;
+          body += "&sessionToken=" + sessionToken;
+        }
         let headers = new Headers({
           'Content-Type': 'application/x-www-form-urlencoded'
         });
@@ -109,7 +113,7 @@ export class UserServices {
             if(restMessage.status == "success") {
                 this.initUser();
                 successCallback(component);
-                console.log("sessionFinale= " + this.loggedUser.sessionToken);
+                //console.log("sessionFinale= " + this.loggedUser.sessionToken);
             }else if ( restMessage.status == "failure" ){
               errorCallback( this.errorService.handleRestMessageError( restMessage.errors, this._loggerHeader + loggerMethod), component );
             }else{

@@ -10,10 +10,11 @@ import {RestMessage} from '../models/restMessage';
 import 'rxjs/Rx';
 
 let favorites = [],
-    listContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/listContact",
-    addContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/addContact",
-    editContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/editContact",
-    deleteContactURL = "http://local.uniquesound.com/mobileApp/MobileAppCompanyCross" + "/deleteContact"
+    domain = "http://www.valleydesigners.com",
+    listContactURL = domain + "/mobileApp/MobileAppCompanyCross/listContact",
+    addContactURL = domain + "/mobileApp/MobileAppCompanyCross/addContact",
+    editContactURL = domain + "/mobileApp/MobileAppCompanyCross/editContact",
+    deleteContactURL = domain + "/mobileApp/MobileAppCompanyCross/deleteContact"
 
 @Injectable()
 export class ContactServices {
@@ -203,7 +204,6 @@ export class ContactServices {
         //observable.error
         error => {
           console.error( this._loggerHeader + loggerMethod + "error subscribing restMessage" + error);
-          //errorCallback("internal error or connection aborted",nav);
         },
         //observable.complete
         () => {
@@ -250,7 +250,6 @@ export class ContactServices {
         //observable.error
         error => {
           console.error( this._loggerHeader + loggerMethod + "error subscribing restMessage" + error);
-          //errorCallback("internal error or connection aborted",nav);
         },
         //observable.complete
         () => {

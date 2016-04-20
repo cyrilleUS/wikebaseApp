@@ -1,9 +1,9 @@
 
-import {IonicApp, NavController, ViewController, Alert, Page} from 'ionic-angular';
+import {IonicApp, NavController, ViewController, Alert, Page, Modal} from 'ionic-angular';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 
 import {ContactServices} from '../../services/contactServices';
-
+import {MyContactPage} from '../my-contact/my-contact';
 import {HomePage} from '../home/home';
 import {Contact} from '../../models/contact';
 
@@ -125,5 +125,10 @@ export class NewContactPage {
     else {
       this.nav.setRoot(HomePage);
     }
+  }
+
+  openMyContact() {
+      let myContactModal = Modal.create(MyContactPage);
+      this.nav.present(myContactModal);
   }
 }

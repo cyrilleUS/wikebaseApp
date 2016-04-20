@@ -52,7 +52,7 @@ export class AuthentificationPage {
       };
       let successCallback = this.successPopup;
       let errorCallback = this.errorPopup;
-      let callbackComponent = this.app.getComponent("nav");
+      let callbackComponent = this.nav;
       this.userServices.login( user, successCallback, errorCallback, callbackComponent );
     }
   }

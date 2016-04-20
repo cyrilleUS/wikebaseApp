@@ -11,7 +11,7 @@ export class ErrorService{
 
   handleCallError(error) {
       console.error( "handleCallError" + error );
-      return Observable.throw( error.json().error || 'Server error' );
+      return Observable.throw( "jsonError"+error.json().error || 'Call error' );
   }
   handleSubscribeError(error, loggerStack: string){
     loggerStack += ".handleSubscribeError";
@@ -19,14 +19,14 @@ export class ErrorService{
     let observableErrorMessage = Observable.create(
       observer => {
         try {
-            observer.next("internal error:"+ error);
+            observer.next(loggerStack+"Subscribe error:"+ error);
             observer.complete();
         } catch (error){
-          observer.error(error);
+          observer.error(loggerStack+"SubscribeError-output"+error);
         }
         return () => {
           //what we should do if we cancel the observable with dispose() or when an error is thrown
-          
+
         }
       }
     );
@@ -34,7 +34,7 @@ export class ErrorService{
   }
   handleRestMessageError(restErrors: RestErrors, loggerStack: string){
     loggerStack += ".restMessageError";
-    let outputErrorMessage : string = "";
+    let outputErrorMessage : string = "RestMessageError-";
     let fieldErrors: Array<FieldError>;
     let globalErrors: Array<GlobalError>;
     if ( restErrors.fieldErrors && ( restErrors.fieldErrors.length != 0 ) ){
@@ -66,7 +66,7 @@ export class ErrorService{
             observer.next(outputErrorMessage);
             observer.complete();
         } catch (error){
-          observer.error(error);
+          observer.error(loggerStack+"RestMessageError-output"+error);
         }
         return () => {
           //what we should do if we cancel the observable with dispose() or when an error is thrown
@@ -84,7 +84,7 @@ export class ErrorService{
             observer.next("the server did not respond correctly");
             observer.complete();
         } catch (error){
-          observer.error(error);
+          observer.error(loggerStack+"undefinedRestMessage-output"+error);
         }
         return () => {
           //what we should do if we cancel the observable with dispose() or when an error is thrown

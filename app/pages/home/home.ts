@@ -33,7 +33,10 @@ export class HomePage {
   onPageDidUnload() {}
 
   disconnect() {
-    this.userServices.disconnect(this.userServices.loggedUser, this.disconnectSucess, this.errorPopup, this.nav);
+      let successCallback = this.disconnectSucess;
+      let errorCallback = this.errorPopup;
+      let callbackComponent = this.nav;
+    this.userServices.disconnect(this.userServices.loggedUser, successCallback, errorCallback, callbackComponent);
   }
 
   disconnectSucess(nav: any) {
