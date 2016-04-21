@@ -3,7 +3,7 @@
 // Warning, all the contact object use in this page are the contacts from the cordova-plugin-contacts.
 // *****************************************************************
 
-import {Page, Alert, IonicApp, ViewController} from 'ionic-angular';
+import {Page, Alert, IonicApp, NavController, ViewController} from 'ionic-angular';
 import {NewContactPage} from '../new-contact/new-contact';
 
 @Page({
@@ -12,19 +12,21 @@ import {NewContactPage} from '../new-contact/new-contact';
 export class MyContactPage {
 
     searchQuery: string;
-    contactList: any;
+    contactList: Contact[];
 
-    constructor(private app: IonicApp, private viewController: ViewController) {
+    constructor(private app: IonicApp, private nav: NavController, private viewController: ViewController) {
         this.searchQuery = '';
+
+    }
+    onPageLoaded(){
+        this.debugAlert("onloaded","onloaded")
         this.getAllContact();
     }
-
     getAllContact() {
         navigator.contacts.find(['displayName'],
         // On sucess
         allContacts => {
             this.contactList = allContacts;
-            this.debugAlert("get all contact sucess", 'Found ' + allContacts.length + ' contacts.');
         },
         // On error
         onerror => {
@@ -46,7 +48,6 @@ export class MyContactPage {
         // On sucess
         allContacts => {
             this.contactList = allContacts;
-            this.debugAlert("get contact sucess", "search:"+this.searchQuery+'. Found ' + allContacts.length + ' contacts.');
         },
         // On error
         onerror => {
@@ -56,24 +57,45 @@ export class MyContactPage {
     }
 
     addContact(cordovaContact: Contact) {
+        this.debugAlert(cordovaContact.displayName,cordovaContact.name.formatted);
         // Push to New Contact page
-        this.debugAlert("Add contact", cordovaContact.name.givenName);
-        this.cancel();
-        this.app.getComponent("nav").setRoot(NewContactPage, {
-            firstName : cordovaContact.name.givenName,
-            lastName : cordovaContact.name.familyName,
-            streetAddress : cordovaContact.addresses[0].streetAddress,
-            streetCity : cordovaContact.addresses[0].locality,
-            streetState : cordovaContact.addresses[0].region,
-            streetCode : cordovaContact.addresses[0].postalCode,
-            streetCountry : cordovaContact.addresses[0].country,
-            phoneNumbers : cordovaContact.phoneNumbers[0].value,
-            email : cordovaContact.emails[0].value
-        });
-    }
+/*
+        let contactName: string = cordovaContact.displayName;
+        let contactFirstName: string = cordovaContact.name.givenName;
+        let contactLastName: string = cordovaContact.name.familyName;
+        let contactEmail: string = "";
+        if( cordovaContact.emails && cordovaContact.emails[0].value ) {
+            contactEmail += cordovaContact.emails[0].value;
+        }
+        let contactPhone: string = "";
+        if(cordovaContact.phoneNumbers && cordovaContact.phoneNumbers[0].value ) {
+            contactPhone += cordovaContact.phoneNumbers[0].value;
+        }
 
-    cancel() {
-      this.viewController.dismiss();
+        let contactAddressStreet: string = "";
+        let contactAddressState: string = "";
+        let contactAddressCity: string = "";
+        let contactAddressCountry: string = "";
+        let contactAddressCode: string = "";
+
+        if(typeof cordovaContact.addresses[cordovaContact.addresses.length-1] !== 'undefined') {
+            contactAddressStreet += cordovaContact.addresses[cordovaContact.addresses.length-1].streetAddress;
+            contactAddressState += cordovaContact.addresses[cordovaContact.addresses.length-1].region;
+            contactAddressCity += cordovaContact.addresses[cordovaContact.addresses.length-1].locality;
+            contactAddressCountry += cordovaContact.addresses[cordovaContact.addresses.length-1].country;
+            contactAddressCode += cordovaContact.addresses[cordovaContact.addresses.length-1].postalCode;
+        }
+
+        this.viewController.dismiss(
+            {contactName, contactFirstName, contactLastName, contactEmail, contactPhone, contactAddressStreet, contactAddressState, contactAddressCity, contactAddressCountry, contactAddressCode}
+        );
+        */
+        this.nav.push(NewContactPage,{
+            firstName: cordovaContact.name.givenName,
+            lastName: cordovaContact.name.givenName,
+            email: cordovaContact.emails[0].value,
+            phone: cordovaContact.phoneNumbers[0].value
+        });
     }
 
     debugAlert(title: string, message: string) {

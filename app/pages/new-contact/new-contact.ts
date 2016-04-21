@@ -1,3 +1,4 @@
+/// <reference path="../../../typings/cordova-contacts.d.ts" />
 
 import {IonicApp, NavController, ViewController, Alert, Page, Modal, NavParams} from 'ionic-angular';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
@@ -15,40 +16,32 @@ export class NewContactPage {
   firstName: AbstractControl;
   lastName: AbstractControl;
   email: AbstractControl;
+  contact: Contact;
+  importedFirstName: string;
+  importedLastName: string;
+  importedEmail: string;
+  importedPhone: string;
+  constructor( private app: IonicApp, private nav: NavController, private navParams: NavParams, private viewController: ViewController, private contactServices: ContactServices, private formBuilder: FormBuilder ) {
+
+      this.importedFirstName = navParams.get("firstName");
+      this.importedLastName = navParams.get("lastName");
+      this.importedEmail = navParams.get("email");
+      this.importedPhone = navParams.get("phone");
 
 
-  constructor( private app: IonicApp, private nav: NavController, private viewController: ViewController, private contactServices: ContactServices, private formBuilder: FormBuilder, private navParams: NavParams ) {
-
-    let contact: Contact = navParams.get("contact");
-    if(!contact)
-    {
         this.contactForm = formBuilder.group ({
-        firstName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
-        lastName: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
-        email: ['', Validators.compose([Validators.required, this.emailValidForm])],
-        addressStreet: [''],
-        addressCity:[''],
-        addressState:[''],
-        addressCode:[''],
-        addressCountry:[''],
-        mobileNumber:[''],
-        phoneNumber:['']
-      })
-    }
-    else {
-        this.contactForm = formBuilder.group ({
-        firstName: [contact.firstName, Validators.compose([Validators.required, Validators.minLength(3)])],
-        lastName: [contact.lastName, Validators.compose([Validators.required, Validators.minLength(3)])],
-        email: [contact.email, Validators.compose([Validators.required, this.emailValidForm])],
-        addressStreet: [contact.addressStreet],
-        addressCity:[contact.addressCity],
-        addressState:[contact.addressState],
-        addressCode:[contact.addressCode],
-        addressCountry:[contact.addressCountry],
-        mobileNumber:[contact.mobileNumber],
-        phoneNumber:[contact.phoneNumber]
+            firstName: [this.importedFirstName, Validators.compose([Validators.required, Validators.minLength(3)])],
+            lastName: [this.importedLastName, Validators.compose([Validators.required, Validators.minLength(3)])],
+            email: [this.importedEmail , Validators.compose([Validators.required, this.emailValidForm])],
+            addressStreet: [''],
+            addressCity:[''],
+            addressState:[''],
+            addressCode:[''],
+            addressCountry:[''],
+            mobileNumber:[this.importedPhone],
+            phoneNumber:['']
         })
-    }
+
     this.firstName = this.contactForm.controls['firstName'];
     this.lastName = this.contactForm.controls['lastName'];
     this.email = this.contactForm.controls['email'];
@@ -146,7 +139,47 @@ export class NewContactPage {
   }
 
   openMyContact() {
-      let myContactModal = Modal.create(MyContactPage);
-      this.nav.present(myContactModal);
+      this.nav.push(MyContactPage);
+    /*let myContactModal = Modal.create(MyContactPage);
+    myContactModal.onDismiss(
+        data => {
+            this.contactForm.value.lastName = data.contactLastName;
+            this.contactForm.value.firstName = data.contactFirstName;*/
+            /*
+            let phoneContactName: string = data.contactName;
+            let alert = Alert.create({
+                title: 'Contact received.',
+                message: 'Do you want to import the contact: ' + phoneContactName + '?',
+                buttons: [
+                        { text:'Yes',
+                        handler: () => {
+                            this.contactForm.value.firstName = data.contactFirstName,
+                            this.contactForm.value.lastName = data.contactLastName,
+                            this.contactForm.value.addressStreet = data.contactAddressStreet,
+                            this.contactForm.value.addressCity = data.contactAddressCity,
+                            this.contactForm.value.addressState = data.contactAddressState,
+                            this.contactForm.value.addressCode = data.contactAddressCode,
+                            this.contactForm.value.addressCountry = data.contactAddressCountry,
+                            this.contactForm.value.phoneNumber = data.contactPhone,
+                            this.contactForm.value.email = data.contactEmail
+                        }
+                    },
+                        { text: 'No'}]
+              });
+            this.nav.present(alert);*/
+            /*this.contactForm.value.firstName = data.firstName,
+            this.contactForm.value.lastName = data.lastName,
+            this.contactForm.value.addressStreet = data.addressStreet,
+            this.contactForm.value.addressCity = data.addressCity,
+            this.contactForm.value.addressState = data.addressState,
+            this.contactForm.value.addressCode = data.addressCode,
+            this.contactForm.value.addressCountry = data.addressCountry,
+            this.contactForm.value.phoneNumber = data.phoneNumber,
+            this.contactForm.value.email = data.email*/
+        /*}
+    );
+    this.nav.present(myContactModal);*/
   }
+
+
 }
