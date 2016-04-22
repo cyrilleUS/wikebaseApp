@@ -18,33 +18,13 @@ export class PhoneContactService {
         this.platform.ready().then(
             () => {
                 if (navigator.contacts){
-                    navigator.contacts.find(['displayName'],
-                    // On sucess
-                    data => {
-                        this.phoneContactList = data;
-                    },
-                    // On error
-                    onerror => {
-                        console.log( this._loggerHeader + loggerMethod + "platformReady ok , navigator.contacts ok but error in navigator.contacts.find");
-                        let fakeContact: Contact = new Contact();
-                        fakeContact.name.familyName  = "fakeFamily";
-                        fakeContact.name.givenName  = "fakeFirstName";
-                        this.phoneContactList.push(fakeContact);
-                    // Options
-                    });
+                    var options      = new ContactFindOptions();
+                    options.filter   = "*";
+                    options.multiple = true;
+                    var fields       = ["displayName"];
+                    navigator.contacts.find(fields, this._successFindContact, this._errorFindContact, options);
                 } else {
-                    console.log(this._loggerHeader + loggerMethod + "platformReady ok, navigator.contacts null");
-/*
-                    let options: ContactProperties = {
-                        "name": {
-                            "familyName": "fakeFamily",
-                            "givenName": "fakeFirstName"
-                        }
-                    };
-                    let fakeContact =  Contacts.create(options);
-
-                    this.phoneContactList.push(fakeContact);
-*/
+                    throw "platfrom ready but navigator.contacts not supported";
                 }
             }
         );
@@ -101,5 +81,13 @@ export class PhoneContactService {
         catch(error) {
             throw("error in convert: " + error);
         }
+    }
+
+    private _successFindContact(contacts){
+        this.phoneContactList = contacts;
+    }
+
+    private _errorFindContact(){
+        throw "error find contact";
     }
 }
