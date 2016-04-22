@@ -1,0 +1,32 @@
+#authentificationContent {
+  scroll-content {
+    background-color: #00ADD5;
+  }
+}
+#loginTitle {
+  font-size: 45px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: white;
+  font-family: fantasy;
+}
+.button-block {
+    background-color: #017B97;
+    margin-top: 50px;
+    opacity: 1;
+}
+.button[disabled] {
+  opacity: 1;
+}
+.error-box {
+  color: #f53d3d;
+  background-color: white;
+  padding-left: 10px;
+  padding-top : 5px;
+  padding-bottom: 5px;
+}
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+}
