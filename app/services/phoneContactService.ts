@@ -84,17 +84,22 @@ export class PhoneContactService {
     }
 
     private _convertIonicContactToWkContact(input: Contact){
-        let output: WkContact;
-        output.firstName = (input.name && input.name.givenName)?input.name.givenName:"";
-        output.lastName = (input.name && input.name.familyName)?input.name.familyName:"";
-        output.email = (input.emails && input.emails[0].value)?input.emails[0].value:"";
-        output.addressStreet = (input.addresses && input.addresses[0].streetAddress)?input.addresses[0].streetAddress:"";
-        output.addressCity = (input.addresses && input.addresses[0].locality)?input.addresses[0].locality:"";
-        output.addressState = (input.addresses && input.addresses[0].region)?input.addresses[0].region:"";
-        output.addressCode = (input.addresses && input.addresses[0].postalCode)?input.addresses[0].postalCode:"";
-        output.addressCountry = (input.addresses && input.addresses[0].country)?input.addresses[0].country:"";
-        output.mobileNumber = (input.phoneNumbers && input.phoneNumbers[0].value)?input.phoneNumbers[0].value:"";
-        output.phoneNumber = (input.phoneNumbers && input.phoneNumbers[1].value)?input.phoneNumbers[1].value:"";
-        return output;
+        try {
+            let output: WkContact = {"idContact": "","firstName": "convertFn","lastName": "convertLn","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": "", "mobileNumber": "", "phoneNumber": ""};
+            output.firstName = (input.name && input.name.givenName)?input.name.givenName:"not found";
+            output.lastName = (input.name && input.name.familyName)?input.name.familyName:"not found";
+            output.email = (input.emails && input.emails[0].value)?input.emails[0].value:"not found";
+            output.addressStreet = (input.addresses && input.addresses[0].streetAddress)?input.addresses[0].streetAddress:"not found";
+            output.addressCity = (input.addresses && input.addresses[0].locality)?input.addresses[0].locality:"not found";
+            output.addressState = (input.addresses && input.addresses[0].region)?input.addresses[0].region:"not found";
+            output.addressCode = (input.addresses && input.addresses[0].postalCode)?input.addresses[0].postalCode:"not found";
+            output.addressCountry = (input.addresses && input.addresses[0].country)?input.addresses[0].country:"not found";
+            output.mobileNumber = (input.phoneNumbers && input.phoneNumbers[0].value)?input.phoneNumbers[0].value:"not found";
+            output.phoneNumber = (input.phoneNumbers && input.phoneNumbers[1] && input.phoneNumbers[1].value)?input.phoneNumbers[1].value:"not found";
+            return output;
+        }
+        catch(error) {
+            throw("error in convert: " + error);
+        }
     }
 }

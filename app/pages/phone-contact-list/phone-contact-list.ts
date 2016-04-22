@@ -30,6 +30,7 @@ export class PhoneContactListPage {
             },
             error => {
                 console.log(error);
+                this.debugAlert("!!!ERROR!!!", error);
             },
             () => {
                 //
