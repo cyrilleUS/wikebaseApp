@@ -1,5 +1,7 @@
 import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
+//import {$WebSocket} from 'angular2-websocket/angular2-websocket';
+
 import {HomePage} from './pages/home/home';
 import {ContactDetailPage} from './pages/contact-detail/contact-detail';
 import {ListContactPage} from './pages/list-contact/list-contact';
