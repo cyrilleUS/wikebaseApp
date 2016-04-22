@@ -19,20 +19,14 @@ export class PhoneContactService {
         this.platform.ready().then(
             () => {
                 if (navigator.contacts){
-                    alert("Contacts available");
-                    //let options: ContactFindOptions  = new ContactFindOptions();
-                    //options.filter   = "";
-                    //options.multiple = true;
-                    //let fields       = ["displayName"];
-                    //navigator.contacts.find(fields, this._successFindContact, this._errorFindContact, options);
                     var options:any = {};
                     options.multiple = true;
                     Contacts.find(['*'],options).then(
                         (contacts) => { this._successFindContact(contacts); }
+                    ).catch(
+                        (reason) => { this._errorFindContact(reason); }
                     );
-                    alert("Executed find contacts");
                 } else {
-                    alert("Contacts not available");
                     throw "platfrom ready but navigator.contacts not supported";
                 }
             }
@@ -53,7 +47,6 @@ export class PhoneContactService {
                                 output.push(this._convertIonicContactToWkContact(contact));
                             }
                         );
-                        alert("First contact is "+output[0].firstName+" "+output[0].lastName);
                     } else {
                         console.log(this._loggerHeader + loggerMethod + "creating fake contact");
                         let fakeContact: WkContact = {"idContact": "","firstName": "fakeFirstName","lastName": "fakeLastName","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": "", "mobileNumber": "", "phoneNumber": ""};
@@ -89,18 +82,15 @@ export class PhoneContactService {
             return output;
         }
         catch(error) {
-            alert("Failed to convert");
             throw("error in convert: " + error);
         }
     }
 
     private _successFindContact(contacts){
-        alert("found contacts: "+contacts);
         this.phoneContactList = contacts;
     }
 
-    private _errorFindContact(){
-        alert("Cound not find contacts");
-        throw "error find contact";
+    private _errorFindContact(reason){
+        throw "Error find contact:"+reason;
     }
 }
