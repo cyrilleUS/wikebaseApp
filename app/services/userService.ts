@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 
 import {ErrorService} from './errorService';
 
-import {User} from '../models/user';
+import {WkUser} from '../models/wkUser';
 import {RestMessage} from '../models/restMessage';
 
 import 'rxjs/Rx';
@@ -15,8 +15,8 @@ let favorites = [],
     disconnectURL = domain + "/mobileApp/MobileAppUserCross/disconnect"
 
 @Injectable()
-export class UserServices {
-    loggedUser: User;
+export class UserService {
+    loggedUser: WkUser;
     http: Http;
     errorService: ErrorService;
     private _loggerHeader = "error in userServices";
@@ -33,7 +33,7 @@ export class UserServices {
 //******************************************************************************
 //REST CALLS********************************************************************
 //******************************************************************************
-    callLogin( user:User ) {
+    callLogin( user: WkUser ) {
       let loggerMethod: string = ".callLogin";
       let body = "locale=fr_US&email=" + user.email + "&password=" + user.password;
       let headers = new Headers({
@@ -67,7 +67,7 @@ export class UserServices {
 //******************************************************************************
 //PUBLIC METHODS****************************************************************
 //******************************************************************************
-    login( user: User, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
+    login( user: WkUser, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
       let loggerMethod: string = ".login";
       let restMessage: RestMessage;
       this.callLogin(user).subscribe(
@@ -95,7 +95,7 @@ export class UserServices {
       );
     }
 
-    disconnect( user: User, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
+    disconnect( user: WkUser, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ) {
         console.log("session= " + this.loggedUser.sessionToken);
         let loggerMethod: string = ".disconnect";
         let restMessage: RestMessage;

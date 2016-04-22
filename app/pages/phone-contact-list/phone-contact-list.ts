@@ -1,27 +1,42 @@
+/*
 /// <reference path="../../../typings/cordova-contacts.d.ts" />
-// *****************************************************************
-// Warning, all the contact object use in this page are the contacts from the cordova-plugin-contacts.
-// *****************************************************************
+*/
+
+
 
 import {Page, Alert, IonicApp, NavController, ViewController} from 'ionic-angular';
 import {NewContactPage} from '../new-contact/new-contact';
+import {WkContact} from '../../models/wkContact';
+import {PhoneContactService} from '../../services/phoneContactService';
 
 @Page({
-  templateUrl: 'build/pages/my-contact/my-contact.html'
+  templateUrl: 'build/pages/phone-contact-list/phone-contact-list.html'
 })
-export class MyContactPage {
+export class PhoneContactListPage {
 
     searchQuery: string;
-    contactList: Contact[];
+    contactList: WkContact[];
 
-    constructor(private app: IonicApp, private nav: NavController, private viewController: ViewController) {
+    constructor(private app: IonicApp, private nav: NavController, private viewController: ViewController, private phoneContactService: PhoneContactService) {
         this.searchQuery = '';
 
     }
     onPageLoaded(){
-        this.debugAlert("onloaded","onloaded")
-        this.getAllContact();
+        //this.debugAlert("onloaded","onloaded")
+        //this.getAllContact();
+        this.phoneContactService.getAllContact().subscribe(
+            data => {
+                this.contactList = data;
+            },
+            error => {
+                console.log(error);
+            },
+            () => {
+                //
+            }
+        );
     }
+    /*
     getAllContact() {
         navigator.contacts.find(['displayName'],
         // On sucess
@@ -33,8 +48,8 @@ export class MyContactPage {
             this.debugAlert("get all contact fail", "");
         // Options
         });
-    }
-
+    }*/
+/*
     getContact() {
         let options = new ContactFindOptions( );
 
@@ -55,9 +70,9 @@ export class MyContactPage {
         // Options
     }, options);
     }
-
-    addContact(cordovaContact: Contact) {
-        this.debugAlert(cordovaContact.displayName,cordovaContact.name.formatted);
+*/
+    addContact(contact: WkContact) {
+        this.debugAlert(contact.firstName,contact.lastName);
         // Push to New Contact page
 /*
         let contactName: string = cordovaContact.displayName;
@@ -91,10 +106,7 @@ export class MyContactPage {
         );
         */
         this.nav.push(NewContactPage,{
-            firstName: cordovaContact.name.givenName,
-            lastName: cordovaContact.name.givenName,
-            email: cordovaContact.emails[0].value,
-            phone: cordovaContact.phoneNumbers[0].value
+            contact: contact
         });
     }
 

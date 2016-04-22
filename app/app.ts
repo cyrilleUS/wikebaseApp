@@ -4,13 +4,12 @@ import {HomePage} from './pages/home/home';
 import {ContactDetailPage} from './pages/contact-detail/contact-detail';
 import {ListContactPage} from './pages/list-contact/list-contact';
 import {NewContactPage} from './pages/new-contact/new-contact';
-import {AuthentificationPage} from './pages/authentification/authentification';
+import {AuthenticationPage} from './pages/authentication/authentication';
 import {LoadingModal} from './components/loading-modal/loading-modal';
-import {ContactServices} from './services/contactServices';
-import {UserServices} from './services/userServices';
+import {ContactService} from './services/contactService';
+import {UserService} from './services/userService';
 import {ErrorService} from './services/errorService';
-import {Contact} from './models/contact';
-
+import {PhoneContactService} from './services/phoneContactService';
 
 @App({
   templateUrl: 'build/app.html',
@@ -18,22 +17,15 @@ import {Contact} from './models/contact';
         scrollAssist: false,
         autoFocusAssist: false
     }, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers: [ContactServices, UserServices, ErrorService],
+  providers: [ContactService, UserService, ErrorService, PhoneContactService],
   directives: [LoadingModal]
 })
 
 export class MyApp {
   rootPage: any;
   pages: Array<{title: string, component: any}>;
-  contactServices: ContactServices;
-  userServices: UserServices;
-  errorService: ErrorService;
 
-  constructor(private app: IonicApp, private platform: Platform, contactServices: ContactServices, userServices: UserServices, errorService: ErrorService) {
-
-    this.contactServices = contactServices;
-    this.userServices = userServices;
-    this.errorService = errorService;
+  constructor(private app: IonicApp, private platform: Platform, private contactService: ContactService, private userService: UserService, private errorService: ErrorService, private phoneContactService: PhoneContactService) {
 
     this.initializeApp();
 
@@ -42,7 +34,7 @@ export class MyApp {
       { title: 'Contact List', component: ListContactPage },
       { title: 'New Contact', component: NewContactPage }
     ];
-    this.rootPage = AuthentificationPage;
+    this.rootPage = AuthenticationPage;
 
   }
 
@@ -52,7 +44,8 @@ export class MyApp {
         StatusBar.styleDefault();
       }
     );
-    this.userServices.init();
+    this.userService.init();
+    this.phoneContactService.init();
   }
 
   openPage(page) {

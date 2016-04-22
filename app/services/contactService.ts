@@ -3,9 +3,9 @@ import {Http, Headers, RequestOptions} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
 
 import {ErrorService} from './errorService';
-import {UserServices} from './userServices';
+import {UserService} from './userService';
 
-import {Contact} from '../models/contact';
+import {WkContact} from '../models/wkContact';
 import {RestMessage} from '../models/restMessage';
 import 'rxjs/Rx';
 
@@ -17,19 +17,19 @@ let favorites = [],
     deleteContactURL = domain + "/mobileApp/MobileAppCompanyCross/deleteContact"
 
 @Injectable()
-export class ContactServices {
+export class ContactService {
     http: Http;
     errorService: ErrorService;
-    userServices: UserServices;
-    contactList: Array<Contact>;
+    userService: UserService;
+    contactList: Array<WkContact>;
     initErrorMessage: string;
     initiated: boolean = false;
     private _loggerHeader: string = "error in contactServices";
 
-    constructor (http: Http, userServices: UserServices, errorService: ErrorService) {
+    constructor (http: Http, userService: UserService, errorService: ErrorService) {
       this.http = http;
       this.errorService = errorService;
-      this.userServices = userServices;
+      this.userService = userService;
     }
     //initiate contactList
     init() {
@@ -89,8 +89,8 @@ export class ContactServices {
 //get the list of Contacts accessible to the user
     callListContact(){
       let body = "locale=fr_US";
-      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
-        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+      if (this.userService.loggedUser && this.userService.loggedUser.sessionToken){
+        let sessionToken: string = this.userService.loggedUser.sessionToken;
         body += "&sessionToken=" + sessionToken;
       }
       let headers = new Headers({
@@ -104,10 +104,10 @@ export class ContactServices {
           .catch( this.errorService.handleCallError );
     }
     //RestCall to save a contact
-    callSaveContact( contact: Contact ){
+    callSaveContact( contact: WkContact ){
       let body = "locale=fr_US";
-      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
-        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+      if (this.userService.loggedUser && this.userService.loggedUser.sessionToken){
+        let sessionToken: string = this.userService.loggedUser.sessionToken;
         body += "&sessionToken=" + sessionToken;
       }
       body += this.toXformString(contact);
@@ -123,10 +123,10 @@ export class ContactServices {
           .catch( this.errorService.handleCallError );
     }
 
-    callEditContact( contact: Contact ){
+    callEditContact( contact: WkContact ){
       let body = "locale=fr_US";
-      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
-        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+      if (this.userService.loggedUser && this.userService.loggedUser.sessionToken){
+        let sessionToken: string = this.userService.loggedUser.sessionToken;
         body += "&sessionToken=" + sessionToken;
       }
       body += this.toXformString(contact);
@@ -141,10 +141,10 @@ export class ContactServices {
           .catch( this.errorService.handleCallError );
     }
 
-    callDeleteContact( contact: Contact ){
+    callDeleteContact( contact: WkContact ){
       let body = "locale=fr_US";
-      if (this.userServices.loggedUser && this.userServices.loggedUser.sessionToken){
-        let sessionToken: string = this.userServices.loggedUser.sessionToken;
+      if (this.userService.loggedUser && this.userService.loggedUser.sessionToken){
+        let sessionToken: string = this.userService.loggedUser.sessionToken;
         body += "&sessionToken=" + sessionToken;
       }
       body += this.toXformString(contact);
@@ -169,7 +169,7 @@ export class ContactServices {
     getContactListSize(){
       return this.contactList.length;
     }
-    addContact( contact: Contact, successCallback: ( message: string, nav:any ) => void, errorCallback: ( message: string, nav:any ) => void, component: any ) {
+    addContact( contact: WkContact, successCallback: ( message: string, nav:any ) => void, errorCallback: ( message: string, nav:any ) => void, component: any ) {
       let loggerMethod: string = ".addContact";
       let restMessage: RestMessage;
       this.callSaveContact(contact).subscribe(
@@ -193,7 +193,7 @@ export class ContactServices {
         }
       );
     }
-    editContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, successComponent: any, errorComponent: any ) {
+    editContact( contact: WkContact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, successComponent: any, errorComponent: any ) {
       let loggerMethod: string = ".editContact";
       let restMessage: RestMessage;
       this.callEditContact( contact ).subscribe(
@@ -208,7 +208,7 @@ export class ContactServices {
         //observable.complete
         () => {
         if(restMessage.status == "success") {
-            let updatedContact : Contact = restMessage.singleResult;
+            let updatedContact : WkContact = restMessage.singleResult;
             this.contactList[this.getContactIndexById(updatedContact.idContact)] = updatedContact;
             successCallback(successComponent);
         }else if ( restMessage.status == "failure" ){
@@ -238,7 +238,7 @@ export class ContactServices {
       return this.contactList;
     }
 
-    deleteContact( contact: Contact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ){
+    deleteContact( contact: WkContact, successCallback: ( nav: any ) => void, errorCallback: ( errorMessage: Observable<string>, nav: any ) => void, component:any ){
       let loggerMethod: string = ".deleteContact";
       let restMessage: RestMessage;
       let idContactToDelete: string = contact.idContact;
@@ -272,7 +272,7 @@ export class ContactServices {
 //PRIVATE METHODS
 //******************************************************************************
 
-    private toXformString(contact: Contact) {
+    private toXformString(contact: WkContact) {
       let output: string = "";
       if(contact.idContact) { output += "&idContact="+contact.idContact; }
       if(contact.firstName) { output += "&firstName="+contact.firstName; }
@@ -289,8 +289,8 @@ export class ContactServices {
     }
 
     private setUpEmptyContactList(){
-      let contactList: Array<Contact>;
-      let emptyContact: Contact = {"idContact": "","firstName": "","lastName": "","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": "", "mobileNumber": "", "phoneNumber": ""};
+      let contactList: Array<WkContact>;
+      let emptyContact: WkContact = {"idContact": "","firstName": "","lastName": "","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": "", "mobileNumber": "", "phoneNumber": ""};
       contactList = [emptyContact];
     return contactList;
     }

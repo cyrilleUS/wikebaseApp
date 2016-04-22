@@ -1,4 +1,4 @@
-export class Contact {
+export class WkContact {
   idContact: string;
   firstName: string;
   lastName: string;
