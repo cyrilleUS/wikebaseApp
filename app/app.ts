@@ -12,6 +12,15 @@ import {ContactService} from './services/contactService';
 import {UserService} from './services/userService';
 import {ErrorService} from './services/errorService';
 import {PhoneContactService} from './services/phoneContactService';
+import {ExceptionHandler} from 'angular2/core';
+import {provide} from 'angular2/core';
+
+class MyExceptionHandler extends ExceptionHandler {
+   call(error, stackTrace = null, reason = null) {
+       // do something with the exception
+       alert("error="+error+" / stackTrace="+stackTrace+" / reason="+reason);
+   }
+}
 
 @App({
   templateUrl: 'build/app.html',
@@ -19,9 +28,10 @@ import {PhoneContactService} from './services/phoneContactService';
         scrollAssist: false,
         autoFocusAssist: false
     }, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers: [ContactService, UserService, ErrorService, PhoneContactService],
+  providers: [ContactService, UserService, ErrorService, PhoneContactService, provide(ExceptionHandler, {useClass:MyExceptionHandler})],
   directives: [LoadingModal]
 })
+
 
 export class MyApp {
   rootPage: any;

@@ -1,3 +1,4 @@
+/// <reference path="../../typings/cordova-contacts.d.ts" />
 
 import {Injectable} from 'angular2/core';
 import {Platform} from 'ionic-angular';
@@ -18,12 +19,20 @@ export class PhoneContactService {
         this.platform.ready().then(
             () => {
                 if (navigator.contacts){
-                    var options      = new ContactFindOptions();
-                    options.filter   = "*";
+                    alert("Contacts available");
+                    //let options: ContactFindOptions  = new ContactFindOptions();
+                    //options.filter   = "";
+                    //options.multiple = true;
+                    //let fields       = ["displayName"];
+                    //navigator.contacts.find(fields, this._successFindContact, this._errorFindContact, options);
+                    var options:any = {};
                     options.multiple = true;
-                    var fields       = ["displayName"];
-                    navigator.contacts.find(fields, this._successFindContact, this._errorFindContact, options);
+                    Contacts.find(['*'],options).then(
+                        (contacts) => { this._successFindContact(contacts); }
+                    );
+                    alert("Executed find contacts");
                 } else {
+                    alert("Contacts not available");
                     throw "platfrom ready but navigator.contacts not supported";
                 }
             }
@@ -35,7 +44,7 @@ export class PhoneContactService {
             observer => {
                 try {
 
-                    let output: Array<WkContact> = new Array(this.phoneContactList.length);
+                    let output: Array<WkContact> = new Array();
                     if (this.phoneContactList && (this.phoneContactList.length > 0)){
                         console.log(this._loggerHeader + loggerMethod + "this.phoneContactList && this.phoneContactList.length > 0");
                         this.phoneContactList.forEach(
@@ -44,6 +53,7 @@ export class PhoneContactService {
                                 output.push(this._convertIonicContactToWkContact(contact));
                             }
                         );
+                        alert("First contact is "+output[0].firstName+" "+output[0].lastName);
                     } else {
                         console.log(this._loggerHeader + loggerMethod + "creating fake contact");
                         let fakeContact: WkContact = {"idContact": "","firstName": "fakeFirstName","lastName": "fakeLastName","email": "","addressStreet": "","addressCity": "","addressState": "","addressCode": "","addressCountry": "", "mobileNumber": "", "phoneNumber": ""};
@@ -79,15 +89,18 @@ export class PhoneContactService {
             return output;
         }
         catch(error) {
+            alert("Failed to convert");
             throw("error in convert: " + error);
         }
     }
 
     private _successFindContact(contacts){
+        alert("found contacts: "+contacts);
         this.phoneContactList = contacts;
     }
 
     private _errorFindContact(){
+        alert("Cound not find contacts");
         throw "error find contact";
     }
 }
