@@ -1,3 +1,4 @@
+/// <reference path="../../typings/cordova-contacts.d.ts" />
 
 import {Injectable} from 'angular2/core';
 import {Platform} from 'ionic-angular';
@@ -18,11 +19,13 @@ export class PhoneContactService {
         this.platform.ready().then(
             () => {
                 if (navigator.contacts){
-                    var options      = new ContactFindOptions();
-                    options.filter   = "*";
+                    var options:any = {};
                     options.multiple = true;
-                    var fields       = ["displayName"];
-                    navigator.contacts.find(fields, this._successFindContact, this._errorFindContact, options);
+                    Contacts.find(['*'],options).then(
+                        (contacts) => { this._successFindContact(contacts); }
+                    ).catch(
+                        (reason) => { this._errorFindContact(reason); }
+                    );
                 } else {
                     throw "platfrom ready but navigator.contacts not supported";
                 }
@@ -35,7 +38,7 @@ export class PhoneContactService {
             observer => {
                 try {
 
-                    let output: Array<WkContact> = new Array(this.phoneContactList.length);
+                    let output: Array<WkContact> = new Array();
                     if (this.phoneContactList && (this.phoneContactList.length > 0)){
                         console.log(this._loggerHeader + loggerMethod + "this.phoneContactList && this.phoneContactList.length > 0");
                         this.phoneContactList.forEach(
@@ -87,7 +90,7 @@ export class PhoneContactService {
         this.phoneContactList = contacts;
     }
 
-    private _errorFindContact(){
-        throw "error find contact";
+    private _errorFindContact(reason){
+        throw "Error find contact:"+reason;
     }
 }

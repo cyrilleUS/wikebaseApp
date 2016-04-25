@@ -2,6 +2,7 @@ import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {$WebSocket} from 'angular2-websocket/angular2-websocket';
 import {provide} from 'angular2/core';
+import {ExceptionHandler} from 'angular2/core';
 
 import {HomePage} from './pages/home/home';
 import {ContactDetailPage} from './pages/contact-detail/contact-detail';
@@ -17,15 +18,28 @@ import {ErrorService} from './services/errorService';
 import {PhoneContactService} from './services/phoneContactService';
 import {WebSocketService} from './services/webSocketService';
 
+
+
+
+class MyExceptionHandler extends ExceptionHandler {
+   call(error, stackTrace = null, reason = null) {
+       // do something with the exception
+       alert("error="+error+" / stackTrace="+stackTrace+" / reason="+reason);
+   }
+}
+
+
 @App({
   templateUrl: 'build/app.html',
   config: {
         scrollAssist: false,
         autoFocusAssist: false
     }, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers: [ContactService, UserService, ErrorService, PhoneContactService, provide( $WebSocket, { useValue: new $WebSocket("ws://echo.websocket.org") }), WebSocketService ],
+
+  providers: [ContactService, UserService, ErrorService, PhoneContactService, , WebSocketService, provide(ExceptionHandler, {useClass:MyExceptionHandler}), provide( $WebSocket, { useValue: new $WebSocket("ws://echo.websocket.org") }) ],
   directives: [LoadingModal]
 })
+
 
 export class MyApp {
   rootPage: any;

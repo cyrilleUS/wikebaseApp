@@ -1,4 +1,4 @@
-import {Injectable, provide} from 'angular2/core';
+import {Injectable, Component, Inject, provide} from 'angular2/core';
 import {$WebSocket} from 'angular2-websocket/angular2-websocket';
 import {Http} from 'angular2/http';
 
@@ -28,19 +28,19 @@ export class WebSocketService {
     }
 
     public connect() {
-        this.connection.connect(true);
+        this.wsConnection.connect(true);
     }
 
     public disconnect() {
-        this.connection.close(false);
+        this.wsConnection.close(false);
     }
 
     private reconnect() {
-        this.connection.reconnect();
+        this.wsConnection.reconnect();
     }
 
     public sendMessage(msg: any) {
-        this.connection.send(msg);
+        this.wsConnection.send(msg);
     }
 
     private onRecieveHandler(evt: MessageEvent) {
