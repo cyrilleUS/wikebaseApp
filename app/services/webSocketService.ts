@@ -2,8 +2,15 @@ import {Injectable, Component, Inject, provide} from 'angular2/core';
 import {$WebSocket} from 'angular2-websocket/angular2-websocket';
 import {Http} from 'angular2/http';
 
+import {ChatMessage} from '../models/chatMessage';
+
+let favorites = [],
+    domain = "ws://www.valleydesigners.com",
+    chatConnectUrl = domain + "/wsMobileApp/ws",
+    chatSubscribeUrl = "/topic/message"
+
 @Component({
-  providers: [ provide( $WebSocket, { useValue: new $WebSocket("ws://echo.websocket.org") } ) ]
+  providers: [ provide( $WebSocket, { useValue: new $WebSocket(chatConnectUrl) } ) ]
 })
 
 @Injectable()
@@ -19,11 +26,11 @@ export class WebSocketService {
         return "Hello";
     }
     send() {
-        var msg = {
-            author: "wike",
-            message: "hi"
+        let chatMessage: ChatMessage = {
+            "author": "fromMobile",
+            "message": "a message from the telephone"
         }
-        this.sendMessage(JSON.stringify(msg));
+        this.sendMessage(JSON.stringify(chatMessage));
         alert("message sent");
     }
 
