@@ -20,16 +20,19 @@ s
   }
 
   onPageLoaded(){
+    this.contactService.init();
     this.contactList = this.contactService.getAll();
   }
+
   onPageWillEnter() {
     /*to do just before the display of the page*/
     //console.log("will enter list contact");
-
   }
+
   onPageDidEnter(){
     //console.log("list contact did enter");
   }
+
   onPageWillLeave() {
     //console.log("list contact will leave");
   }

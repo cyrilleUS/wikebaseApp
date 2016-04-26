@@ -106,6 +106,7 @@ export class PhoneContactListPage {
             {contactName, contactFirstName, contactLastName, contactEmail, contactPhone, contactAddressStreet, contactAddressState, contactAddressCity, contactAddressCountry, contactAddressCode}
         );
         */
+
         this.nav.push(NewContactPage,{
             contact: contact
         });
