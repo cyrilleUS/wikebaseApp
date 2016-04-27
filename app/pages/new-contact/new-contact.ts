@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/cordova-contacts.d.ts" />
 
-import {IonicApp, NavController, ViewController, Alert, Page, Modal, NavParams} from 'ionic-angular';
+import {IonicApp, NavController, ViewController, Alert, Page, Modal, NavParams, Toast} from 'ionic-angular';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Control, Validators, AbstractControl } from 'angular2/common';
 
 import {ContactService} from '../../services/contactService';

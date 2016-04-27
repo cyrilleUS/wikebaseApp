@@ -9,7 +9,7 @@ import {Http} from 'angular2/http';
 @Injectable()
 export class WebSocketService {
     constructor( private wsConnection : $WebSocket ) {
-        alert("Starting connection");
+        //alert("Starting connection");
         this.wsConnection.onClose(this.onCloseHandler);
         this.wsConnection.onError(this.onErrorHandler);
         this.wsConnection.onOpen(this.onOpenHandler);

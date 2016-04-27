@@ -107,7 +107,7 @@ export class PhoneContactListPage {
         );
         */
 
-        this.nav.push(NewContactPage,{
+        this.nav.setRoot(NewContactPage,{
             contact: contact
         });
     }
