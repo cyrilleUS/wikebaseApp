@@ -1,6 +1,6 @@
 import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
-import {$WebSocket} from 'angular2-websocket/angular2-websocket';
+//import {$WebSocket} from 'angular2-websocket/angular2-websocket';
 import {provide} from 'angular2/core';
 import {ExceptionHandler} from 'angular2/core';
 
@@ -25,6 +25,7 @@ class MyExceptionHandler extends ExceptionHandler {
    call(error, stackTrace = null, reason = null) {
        // do something with the exception
        alert("error="+error+" / stackTrace="+stackTrace+" / reason="+reason);
+       //sqf
    }
 }
 
@@ -36,7 +37,7 @@ class MyExceptionHandler extends ExceptionHandler {
         autoFocusAssist: false
     }, // http://ionicframework.com/docs/v2/api/config/Config/
 
-  providers: [ContactService, UserService, ErrorService, PhoneContactService, , WebSocketService, provide(ExceptionHandler, {useClass:MyExceptionHandler}), provide( $WebSocket, { useValue: new $WebSocket("ws://echo.websocket.org") }) ],
+  providers: [ContactService, UserService, ErrorService, PhoneContactService, , WebSocketService, provide(ExceptionHandler, {useClass:MyExceptionHandler}) ],
   directives: [LoadingModal]
 })
 

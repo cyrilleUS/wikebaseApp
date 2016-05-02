@@ -5,6 +5,6 @@ export class ChatMessage {
   constructor( author: string, message: string ) {
     this.author = author;
     this.message = message;
-
+ //sd
   }
 }
