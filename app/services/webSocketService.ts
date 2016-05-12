@@ -20,7 +20,6 @@ let favorites = [],
 
 @Injectable()
 export class WebSocketService {
-<<<<<<< HEAD
     private socket;
 
     private stompClient; //= Stomp.over(this.socket);
@@ -35,14 +34,7 @@ export class WebSocketService {
     //    this.wsConnection.onError(this.onErrorHandler);
     //    this.wsConnection.onOpen(this.onOpenHandler);
     //    this.wsConnection.onMessage(this.onRecieveHandler, {});
-=======
-    constructor( private wsConnection : $WebSocket ) {
-        //alert("Starting connection");
-        this.wsConnection.onClose(this.onCloseHandler);
-        this.wsConnection.onError(this.onErrorHandler);
-        this.wsConnection.onOpen(this.onOpenHandler);
-        this.wsConnection.onMessage(this.onRecieveHandler, {});
->>>>>>> origin/Service
+
     }
 
     connectCallback () {

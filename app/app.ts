@@ -37,7 +37,7 @@ class MyExceptionHandler extends ExceptionHandler {
         autoFocusAssist: false
     }, // http://ionicframework.com/docs/v2/api/config/Config/
 
-  providers: [ContactService, UserService, ErrorService, PhoneContactService, , WebSocketService, provide(ExceptionHandler, {useClass:MyExceptionHandler}) ],
+  providers: [ContactService, UserService, ErrorService, PhoneContactService, WebSocketService, provide(ExceptionHandler, {useClass:MyExceptionHandler}) ],
   directives: [LoadingModal]
 })
 
